@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui;
+  --font-display: "Playfair Display", serif;
+
+  /* Brand Palette — Cygnus Consulting */
+  --color-brand-navy:    #0D1F35;
+  --color-brand-blue:    #1B6EC2;
+  --color-brand-accent:  #0EA5D6;
+  --color-brand-light:   #E8F4FD;
+  --color-brand-gold:    #D4AF37;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased bg-white text-slate-900;
+    letter-spacing: -0.01em;
+  }
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ─── Scrolling marquee ─────────────────────────────────── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+  width: max-content;
+}
+
+/* ─── Float (cards / badges) ────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-14px); }
+}
+.animate-float { animation: float 5s ease-in-out infinite; }
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-22px) rotate(4deg); }
+}
+.animate-float-slow { animation: float-slow 9s ease-in-out infinite; }
+
+/* ─── Glow pulse ────────────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50%       { opacity: 0.35; transform: scale(1.08); }
+}
+.animate-pulse-glow { animation: pulse-glow 7s ease-in-out infinite; }
+
+/* ─── Shimmer (loading states & accents) ────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.08) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* ─── Counter count-up (CSS trick) ─────────────────────── */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-count { animation: count-up 0.6s ease-out forwards; }
+
+/* ─── Spin slow ─────────────────────────────────────────── */
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow { animation: spin-slow 20s linear infinite; }
+
+/* ─── Gradient border pulse ─────────────────────────────── */
+@keyframes border-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}
+.animate-border-pulse { animation: border-pulse 3s ease-in-out infinite; }
+
+/* ─── Smooth scroll globally ────────────────────────────── */
+* { scroll-behavior: smooth; }
+
+/* ─── Selection highlight ───────────────────────────────── */
+::selection { background: rgba(27, 110, 194, 0.25); color: inherit; }
+
+/* ─── Glass card variants ───────────────────────────────── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.glass-card-light {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* ─── Step connector line ───────────────────────────────── */
+.step-connector::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #1B6EC2, #0EA5D6);
+  transform: translateY(-50%);
+  opacity: 0.4;
+}
