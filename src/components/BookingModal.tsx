@@ -7,9 +7,9 @@ interface BookingModalProps {
   onClose: () => void;
 }
 
-const AIRTABLE_TOKEN = import.meta.env.VITE_AIRTABLE_TOKEN as string;
-const LEADS_BASE     = import.meta.env.VITE_AIRTABLE_LEADS_BASE as string;
-const LEADS_TABLE    = import.meta.env.VITE_AIRTABLE_LEADS_TABLE as string;
+const AIRTABLE_TOKEN = import.meta.env.VITE_BOOKING_AIRTABLE_TOKEN as string;
+const LEADS_BASE     = import.meta.env.VITE_BOOKING_AIRTABLE_BASE as string;
+const LEADS_TABLE    = import.meta.env.VITE_BOOKING_AIRTABLE_TABLE as string;
 
 const initialForm = {
   firstName: '', lastName: '', companyName: '',
