@@ -557,9 +557,10 @@ const Footer: React.FC = () => (
         </p>
         <div className="flex gap-3">
           {[
-            { icon: <Twitter className="w-4 h-4" />,  label: 'Twitter',  href: 'https://x.com/cygnus_safety' },
-            { icon: <Facebook className="w-4 h-4" />, label: 'Facebook', href: 'https://www.facebook.com/CygnusSafetyConsulting' },
-            { icon: <Linkedin className="w-4 h-4" />, label: 'LinkedIn', href: 'https://www.linkedin.com/company/cygnus-safety-consulting-ltd/posts/?feedView=all' },
+            { icon: <Twitter className="w-4 h-4" />,     label: 'Twitter',  href: 'https://x.com/cygnus_safety' },
+            { icon: <Facebook className="w-4 h-4" />,    label: 'Facebook', href: 'https://www.facebook.com/CygnusSafetyConsulting' },
+            { icon: <Linkedin className="w-4 h-4" />,    label: 'LinkedIn', href: 'https://www.linkedin.com/company/cygnus-safety-consulting-ltd/posts/?feedView=all' },
+            { icon: <MessageCircle className="w-4 h-4" />, label: 'WhatsApp', href: 'https://wa.me/254717925881' },
           ].map(s => (
             <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label} className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-blue transition-colors">
               {s.icon}
@@ -622,19 +623,6 @@ const Footer: React.FC = () => (
       </div>
     </div>
 
-    {/* WhatsApp FAB */}
-    <a
-      href="https://wa.me/254717925881"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Chat on WhatsApp"
-      className="fixed bottom-24 right-6 z-40 bg-[#25D366] text-white p-3.5 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-2 group"
-    >
-      <MessageCircle className="w-5 h-5" />
-      <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-400 font-semibold whitespace-nowrap text-sm">
-        WhatsApp Us
-      </span>
-    </a>
   </footer>
 );
 

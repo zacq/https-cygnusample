@@ -7,9 +7,9 @@ interface BookingModalProps {
   onClose: () => void;
 }
 
-const AIRTABLE_TOKEN = import.meta.env.VITE_AIRTABLE_TOKEN as string | undefined;
-const LEADS_BASE     = import.meta.env.VITE_AIRTABLE_LEADS_BASE as string | undefined;
-const LEADS_TABLE    = import.meta.env.VITE_AIRTABLE_LEADS_TABLE as string | undefined;
+const AIRTABLE_TOKEN = import.meta.env.VITE_AIRTABLE_TOKEN as string;
+const LEADS_BASE     = import.meta.env.VITE_AIRTABLE_LEADS_BASE as string;
+const LEADS_TABLE    = import.meta.env.VITE_AIRTABLE_LEADS_TABLE as string;
 
 const initialForm = {
   firstName: '', lastName: '', companyName: '',
@@ -41,44 +41,35 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
     setStatus('loading');
     setErrorMsg('');
 
-    // If Airtable credentials are configured, submit there; otherwise log and mock success.
-    if (AIRTABLE_TOKEN && LEADS_BASE && LEADS_TABLE) {
-      try {
-        const res = await fetch(`https://api.airtable.com/v0/${LEADS_BASE}/${LEADS_TABLE}`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${AIRTABLE_TOKEN}`,
-            'Content-Type': 'application/json',
+    try {
+      const res = await fetch(`https://api.airtable.com/v0/${LEADS_BASE}/${LEADS_TABLE}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${AIRTABLE_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fields: {
+            Name:             `${formData.firstName} ${formData.lastName}`.trim(),
+            Phone:            formData.phoneNumber,
+            Email:            formData.email,
+            Company:          formData.companyName,
+            'Preferred Date': formData.date,
+            'Preferred Time': formData.time,
+            Status:           'New',
+            Source:           'Website Form',
           },
-          body: JSON.stringify({
-            fields: {
-              Name:             `${formData.firstName} ${formData.lastName}`.trim(),
-              Phone:            formData.phoneNumber,
-              Email:            formData.email,
-              Company:          formData.companyName,
-              'Preferred Date': formData.date,
-              'Preferred Time': formData.time,
-              Status:           'New',
-              Source:           'Website Form',
-            },
-          }),
-        });
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err?.error?.message || 'Submission failed');
-        }
-        setStatus('success');
-        setTimeout(() => onClose(), 3000);
-      } catch (err: unknown) {
-        setStatus('error');
-        setErrorMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err?.error?.message || 'Submission failed');
       }
-    } else {
-      // Dev / no-Airtable fallback — simulate success
-      console.log('Booking form data:', formData);
-      await new Promise(r => setTimeout(r, 1000));
       setStatus('success');
       setTimeout(() => onClose(), 3000);
+    } catch (err: unknown) {
+      setStatus('error');
+      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     }
   };
 
