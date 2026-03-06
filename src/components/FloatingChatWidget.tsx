@@ -4,13 +4,13 @@ import { motion, AnimatePresence } from 'motion/react';
 const WEBHOOK_URL = import.meta.env.VITE_CHAT_WEBHOOK_URL as string | undefined;
 
 const QUICK_REPLIES = [
-  'What services do you offer?',
-  'How does Lean Management work?',
-  'Tell me about safety training',
-  'Book a consultation',
+  'How can Lean Management help my business?',
+  'Tell me about WAH & GWO training',
+  'We have a waste/efficiency problem',
+  'I want to book a free consultation',
 ];
 
-const BOT_INTRO = "Hi! 👋 I'm Apex, Cygnus Consulting's AI assistant. Ask me about our Lean Management, Kaizen programs, safety training, or how we can help transform your operations!";
+const BOT_INTRO = "Hello! 👋 I'm Apex, Cygnus Consulting's AI advisor.\n\nWhat operational challenge is your business facing today? I can help with Lean systems, safety training, or continuous improvement — let's find the right solution together.";
 
 interface Message {
   from: 'bot' | 'user';
@@ -41,18 +41,19 @@ const FloatingChatWidget: React.FC = () => {
     setInput('');
     setTyping(true);
 
-    // If the user says "book" / "consultation" — trigger the booking modal
-    if (/book|consult|call|appointment/i.test(trimmed)) {
+    // Book / consult intent — open the booking modal directly
+    if (/book|consult|call|appointment|strategy/i.test(trimmed)) {
       await new Promise(r => setTimeout(r, 700));
       setTyping(false);
       setMessages(m => [...m, {
         from: 'bot',
-        text: "I'd love to set that up! 📅 Click the button below to schedule your free strategy call with our team.",
+        text: "Great — let's get that locked in! 📅 Click below to fill in your details and a Cygnus consultant will confirm your free strategy call within 24 hours.",
       }]);
-      setTimeout(() => window.dispatchEvent(new CustomEvent('open-booking-modal')), 1000);
+      setTimeout(() => window.dispatchEvent(new CustomEvent('open-booking-modal')), 900);
       return;
     }
 
+    // Hit the n8n webhook if configured
     if (WEBHOOK_URL) {
       try {
         const res = await fetch(WEBHOOK_URL, {
@@ -63,30 +64,46 @@ const FloatingChatWidget: React.FC = () => {
         if (!res.ok) throw new Error('bad response');
         const data = await res.json();
         setTyping(false);
-        setMessages(m => [...m, { from: 'bot', text: data.reply ?? "I didn't catch that — please try again!" }]);
+        setMessages(m => [...m, {
+          from: 'bot',
+          text: data.reply ?? "I didn't quite catch that — could you rephrase?",
+        }]);
       } catch {
         setTyping(false);
         setMessages(m => [...m, {
           from: 'bot',
-          text: "Apologies, I'm having a moment 😅 Reach us on WhatsApp or hit 'Book a Consultation' and we'll get back to you fast!",
+          text: "Sorry, I'm having a brief connectivity issue. You can reach us directly on WhatsApp (+254 717 925 881) or click 'Book a Consultation' and we'll be in touch within 24 hours.",
         }]);
       }
-    } else {
-      // Fallback static responses when no webhook is configured
-      await new Promise(r => setTimeout(r, 900));
-      setTyping(false);
-      const staticReplies: Record<string, string> = {
-        lean:     "Lean Management is about eliminating waste and maximizing value. Cygnus implements the full 5S methodology and Kaizen continuous improvement cycles tailored to your industry.",
-        kaizen:   "Kaizen means 'change for better' — small, daily improvements that compound into massive operational gains. We embed this culture across your entire team.",
-        safety:   "We offer WAH (Working at Heights) and GWO (Global Wind Organisation) certified safety training. Your team, fully compliant and protected.",
-        training: "Our training programs cover Lean, Kaizen, 5S, WAH, and GWO — all hands-on and tailored to your sector.",
-        price:    "Engagement pricing is scoped to your organization's size and needs. Book a free call and we'll build a proposal together.",
-        default:  "Great question! Our team of consultants would be happy to give you a detailed answer. Would you like to book a free 30-min strategy call?",
-      };
-      const lower = trimmed.toLowerCase();
-      const reply = Object.entries(staticReplies).find(([k]) => lower.includes(k))?.[1] ?? staticReplies.default;
-      setMessages(m => [...m, { from: 'bot', text: reply }]);
+      return;
     }
+
+    // Static fallback responses (no webhook configured)
+    await new Promise(r => setTimeout(r, 950));
+    setTyping(false);
+
+    const lower = trimmed.toLowerCase();
+    let reply: string;
+
+    if (/lean|5s|kaizen|waste|efficien|produc/i.test(lower)) {
+      reply = "Lean Management is about eliminating waste and maximising the value your team delivers every day. Cygnus deploys full 5S and Kaizen systems tailored to your industry — our clients typically see 25–35% efficiency gains within 90 days. What sector are you operating in?";
+    } else if (/wah|height|fall|harness|working at height/i.test(lower)) {
+      reply = "Our WAH (Working at Heights) certification is a 2–3 day programme covering harness use, anchor systems, fall prevention, and emergency rescue — keeping your team safe and legally compliant. How many staff would you need certified?";
+    } else if (/gwo|wind|turbine|renewable/i.test(lower)) {
+      reply = "GWO (Global Wind Organisation) training is our internationally recognised 4–5 day certification for wind energy workers — covering Basic Safety, First Aid, Fire Awareness, and Manual Handling. Is your team working in the renewables sector?";
+    } else if (/safe|incident|accident|compliance|certif/i.test(lower)) {
+      reply = "Safety is non-negotiable. Cygnus offers WAH and GWO certified training that reduces workplace incidents and keeps you fully compliant with industry standards. Would you like to tell me more about your team's current safety setup?";
+    } else if (/price|cost|fee|how much|quote/i.test(lower)) {
+      reply = "Engagement scope and pricing is tailored to your organisation's size and specific challenge. The best way to get an accurate picture is a free 30-minute strategy call with our team — no commitment needed. Can I get your name to get started?";
+    } else if (/morale|turnover|staff|team|culture/i.test(lower)) {
+      reply = "Low morale and high turnover are often symptoms of unclear processes and no sense of ownership. Our Kaizen programmes give every employee a role in improvement — which drives engagement dramatically. What does your current team structure look like?";
+    } else if (/quality|defect|error|rework/i.test(lower)) {
+      reply = "Quality issues usually trace back to process gaps, not people. Our Lean implementation identifies root causes and puts structured controls in place — reducing defects and rework measurably. What's your current quality challenge?";
+    } else {
+      reply = "That's a great starting point. At Cygnus, we help organisations tackle exactly these kinds of operational challenges through Lean Management, safety training, and continuous improvement programmes. To point you to the right solution — what industry are you in and how large is your team?";
+    }
+
+    setMessages(m => [...m, { from: 'bot', text: reply }]);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -105,19 +122,19 @@ const FloatingChatWidget: React.FC = () => {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
             className="w-[340px] max-w-[92vw] rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/20 overflow-hidden flex flex-col"
-            style={{ maxHeight: '520px' }}
+            style={{ maxHeight: '540px' }}
           >
             {/* Header */}
             <div className="flex items-center gap-3 px-4 py-3.5 bg-brand-navy shrink-0">
-              <div className="w-9 h-9 rounded-full bg-brand-blue flex items-center justify-center text-white font-bold text-sm shrink-0">
-                A
+              <div className="relative">
+                <div className="w-9 h-9 rounded-full bg-brand-blue flex items-center justify-center text-white font-bold text-sm">
+                  A
+                </div>
+                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-brand-navy" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold text-sm leading-tight">Apex — Cygnus AI</p>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <p className="text-white/60 text-[11px]">Online · Replies instantly</p>
-                </div>
+                <p className="text-white/55 text-[11px] mt-0.5">Operational Excellence Advisor · Online</p>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -145,7 +162,7 @@ const FloatingChatWidget: React.FC = () => {
                       A
                     </div>
                   )}
-                  <div className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
+                  <div className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
                     msg.from === 'user'
                       ? 'bg-brand-navy text-white rounded-br-sm'
                       : 'bg-white border border-slate-200 text-slate-800 rounded-bl-sm shadow-sm'
@@ -168,14 +185,14 @@ const FloatingChatWidget: React.FC = () => {
               <div ref={bottomRef} />
             </div>
 
-            {/* Quick replies — first message only */}
+            {/* Quick replies — shown only on first message */}
             {messages.length <= 1 && (
-              <div className="px-4 pb-3 pt-1 flex flex-wrap gap-2 shrink-0 bg-slate-50 border-t border-slate-100">
+              <div className="px-4 pb-3 pt-2 flex flex-wrap gap-2 shrink-0 bg-slate-50 border-t border-slate-100">
                 {QUICK_REPLIES.map(q => (
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
-                    className="text-xs px-3 py-1.5 rounded-full border border-brand-blue/30 bg-brand-blue/5 text-brand-blue hover:bg-brand-blue/15 transition-colors"
+                    className="text-xs px-3 py-1.5 rounded-full border border-brand-blue/30 bg-brand-blue/5 text-brand-blue hover:bg-brand-blue/15 transition-colors text-left"
                   >
                     {q}
                   </button>
@@ -191,7 +208,7 @@ const FloatingChatWidget: React.FC = () => {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={onKeyDown}
-                placeholder="Type a message..."
+                placeholder="Describe your operational challenge..."
                 className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/30 transition-all"
               />
               <button
@@ -209,7 +226,7 @@ const FloatingChatWidget: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Launcher button */}
+      {/* Launcher */}
       <motion.button
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
