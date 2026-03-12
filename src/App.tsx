@@ -72,9 +72,11 @@ const Navbar: React.FC<{ scrolled: boolean; onBookingClick: () => void }> = ({ s
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 bg-brand-navy rounded-lg flex items-center justify-center shadow-md">
-            <span className="text-white font-bold text-lg leading-none">C</span>
-          </div>
+          <img
+            src="/images/logo.png"
+            alt="Cygnus"
+            className="w-9 h-9 object-contain rounded-lg shadow-md bg-white p-0.5"
+          />
           <span className={`text-xl font-bold tracking-tight transition-colors ${scrolled ? 'text-brand-navy' : 'text-white'}`}>
             Cygnus<span className="text-brand-blue">.</span>
           </span>
