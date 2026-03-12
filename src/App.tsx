@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Menu, X, ArrowRight, Zap, ShieldCheck, Clock,
   CheckCircle2, Phone, Mail, MapPin,
-  Twitter, Facebook, Linkedin, MessageCircle,
+  Twitter, Facebook, Linkedin, MessageCircle, ChevronDown, Search,
 } from 'lucide-react';
 
 import Hero              from './components/Hero';
@@ -12,6 +13,12 @@ import ProblemSection    from './components/ProblemSection';
 import SystemSection     from './components/SystemSection';
 import BookingModal      from './components/BookingModal';
 import FloatingChatWidget from './components/FloatingChatWidget';
+import BusinessExcellencePage from './pages/BusinessExcellencePage';
+import NCATrainingPage from './pages/NCATrainingPage';
+import BusinessExcellenceTrainingPage from './pages/BusinessExcellenceTrainingPage';
+import ServicesPage from './pages/ServicesPage';
+import BlogPage      from './pages/BlogPage';
+import AboutPage     from './pages/AboutPage';
 
 // ─── CTA trigger phrases ──────────────────────────────────────────────────────
 const BOOKING_TRIGGERS = [
@@ -28,17 +35,33 @@ const BOOKING_TRIGGERS = [
 ];
 
 // ─── Navbar ───────────────────────────────────────────────────────────────────
-const navLinks = [
-  { name: 'Home',              href: '#' },
-  { name: 'Business Excellence', href: '#excellence' },
-  { name: 'Training',          href: '#training' },
-  { name: 'Services',          href: '#services' },
-  { name: 'About Us',          href: '#about' },
-  { name: 'Contact',           href: '#contact' },
+type NavChild = { name: string; to: string };
+type NavLink  = { name: string; href?: string; to?: string; children?: NavChild[] };
+
+const navLinks: NavLink[] = [
+  { name: 'Home',                to: '/' },
+  { name: 'Business Excellence', to: '/business-excellence' },
+  {
+    name: 'Training',
+    children: [
+      { name: 'NCA Training',                  to: '/training/nca' },
+      { name: 'Business Excellence Training',  to: '/training/business-excellence' },
+    ],
+  },
+  { name: 'Services', to: '/services' },
+  { name: 'Blog',     to: '/blog' },
+  { name: 'About Us', to: '/about' },
+  { name: 'Contact',  href: '#contact' },
 ];
 
 const Navbar: React.FC<{ scrolled: boolean; onBookingClick: () => void }> = ({ scrolled, onBookingClick }) => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileOpen,    setMobileOpen]    = useState(false);
+  const [trainingOpen,  setTrainingOpen]  = useState(false);
+  const [mobileTrainingOpen, setMobileTrainingOpen] = useState(false);
+
+  const linkClass = `text-sm font-medium transition-colors hover:text-brand-blue ${
+    scrolled ? 'text-slate-600' : 'text-white/85'
+  }`;
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
@@ -48,32 +71,82 @@ const Navbar: React.FC<{ scrolled: boolean; onBookingClick: () => void }> = ({ s
     }`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2.5 group">
+        <Link to="/" className="flex items-center gap-2.5 group">
           <div className="w-9 h-9 bg-brand-navy rounded-lg flex items-center justify-center shadow-md">
             <span className="text-white font-bold text-lg leading-none">C</span>
           </div>
           <span className={`text-xl font-bold tracking-tight transition-colors ${scrolled ? 'text-brand-navy' : 'text-white'}`}>
             Cygnus<span className="text-brand-blue">.</span>
           </span>
-        </a>
+        </Link>
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-7">
-          {navLinks.map(link => (
-            <a
-              key={link.name}
-              href={link.href}
-              className={`text-sm font-medium transition-colors hover:text-brand-blue ${
-                scrolled ? 'text-slate-600' : 'text-white/85'
-              }`}
-            >
-              {link.name}
-            </a>
-          ))}
+          {navLinks.map(link => {
+            if (link.children) {
+              return (
+                <div
+                  key={link.name}
+                  className="relative"
+                  onMouseEnter={() => setTrainingOpen(true)}
+                  onMouseLeave={() => setTrainingOpen(false)}
+                >
+                  <button className={`${linkClass} flex items-center gap-1`}>
+                    {link.name}
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${trainingOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {trainingOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 6 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full left-1/2 -translate-x-1/2 pt-2"
+                      >
+                        <div className="bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden min-w-[220px]">
+                          {link.children.map(child => (
+                            <Link
+                              key={child.name}
+                              to={child.to}
+                              onClick={() => setTrainingOpen(false)}
+                              className="block px-4 py-3 text-sm font-medium text-slate-700 hover:bg-brand-blue/5 hover:text-brand-blue transition-colors"
+                            >
+                              {child.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            }
+
+            return link.to ? (
+              <Link key={link.name} to={link.to} className={linkClass}>
+                {link.name}
+              </Link>
+            ) : (
+              <a key={link.name} href={link.href} className={linkClass}>
+                {link.name}
+              </a>
+            );
+          })}
         </div>
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
+          <Link
+            to="/blog"
+            aria-label="Search insights"
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
+              scrolled ? 'text-slate-500 hover:bg-slate-100 hover:text-brand-blue' : 'text-white/70 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            <Search className="w-4 h-4" />
+          </Link>
           <button
             onClick={onBookingClick}
             className="bg-brand-navy hover:bg-brand-blue text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-brand-navy/20 flex items-center gap-1.5"
@@ -96,7 +169,7 @@ const Navbar: React.FC<{ scrolled: boolean; onBookingClick: () => void }> = ({ s
         </button>
       </div>
 
-      {/* Mobile dropdown */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -106,16 +179,63 @@ const Navbar: React.FC<{ scrolled: boolean; onBookingClick: () => void }> = ({ s
             transition={{ duration: 0.2 }}
             className="absolute top-full left-0 right-0 bg-white shadow-2xl border-t border-slate-100 flex flex-col gap-1 p-4 md:hidden"
           >
-            {navLinks.map(link => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="text-base font-medium text-slate-800 hover:text-brand-blue py-2.5 px-3 rounded-lg hover:bg-slate-50 transition-colors"
-              >
-                {link.name}
-              </a>
-            ))}
+            {navLinks.map(link => {
+              if (link.children) {
+                return (
+                  <div key={link.name}>
+                    <button
+                      onClick={() => setMobileTrainingOpen(v => !v)}
+                      className="w-full flex items-center justify-between text-base font-medium text-slate-800 hover:text-brand-blue py-2.5 px-3 rounded-lg hover:bg-slate-50 transition-colors"
+                    >
+                      {link.name}
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileTrainingOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    <AnimatePresence>
+                      {mobileTrainingOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          {link.children.map(child => (
+                            <Link
+                              key={child.name}
+                              to={child.to}
+                              onClick={() => { setMobileOpen(false); setMobileTrainingOpen(false); }}
+                              className="block text-sm font-medium text-slate-600 hover:text-brand-blue py-2 pl-7 pr-3 rounded-lg hover:bg-slate-50 transition-colors"
+                            >
+                              {child.name}
+                            </Link>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              }
+
+              return link.to ? (
+                <Link
+                  key={link.name}
+                  to={link.to}
+                  onClick={() => setMobileOpen(false)}
+                  className="text-base font-medium text-slate-800 hover:text-brand-blue py-2.5 px-3 rounded-lg hover:bg-slate-50 transition-colors"
+                >
+                  {link.name}
+                </Link>
+              ) : (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="text-base font-medium text-slate-800 hover:text-brand-blue py-2.5 px-3 rounded-lg hover:bg-slate-50 transition-colors"
+                >
+                  {link.name}
+                </a>
+              );
+            })}
             <button
               onClick={() => { setMobileOpen(false); onBookingClick(); }}
               className="mt-3 bg-brand-navy text-white py-3.5 rounded-xl font-bold"
@@ -661,23 +781,35 @@ export default function App() {
   }, []);
 
   return (
-    <>
+    <BrowserRouter>
       <div className="font-sans overflow-x-hidden">
         <Navbar scrolled={scrolled} onBookingClick={openBooking} />
-        <Hero />
-        <TrustedTeams />
-        <Benefits />
-        <ProblemSection />
-        <Services />
-        <About />
-        <Training />
-        <SystemSection />
-        <CTASection />
+        <Routes>
+          <Route path="/" element={
+            <>
+              <Hero />
+              <TrustedTeams />
+              <Benefits />
+              <ProblemSection />
+              <Services />
+              <About />
+              <Training />
+              <SystemSection />
+              <CTASection />
+            </>
+          } />
+          <Route path="/business-excellence" element={<BusinessExcellencePage />} />
+          <Route path="/training/nca" element={<NCATrainingPage />} />
+          <Route path="/training/business-excellence" element={<BusinessExcellenceTrainingPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/blog"     element={<BlogPage />} />
+          <Route path="/about"    element={<AboutPage />} />
+        </Routes>
         <Footer />
       </div>
 
       <BookingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <FloatingChatWidget />
-    </>
+    </BrowserRouter>
   );
 }

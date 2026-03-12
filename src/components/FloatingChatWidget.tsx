@@ -4,10 +4,10 @@ import { motion, AnimatePresence } from 'motion/react';
 const WEBHOOK_URL = import.meta.env.VITE_CHAT_WEBHOOK_URL as string | undefined;
 
 const QUICK_REPLIES = [
-  'How can Lean Management help my business?',
-  'Tell me about WAH & GWO training',
-  'We have a waste/efficiency problem',
-  'I want to book a free consultation',
+  'ESG implementation for my organization',
+  'Strategy execution and alignment',
+  'Financial optimization frameworks',
+  'Process improvement and Kaizen',
 ];
 
 const BOT_INTRO = "Hello! 👋 I'm Apex, Cygnus Consulting's AI advisor.\n\nWhat operational challenge is your business facing today? I can help with Lean systems, safety training, or continuous improvement — let's find the right solution together.";
@@ -33,6 +33,12 @@ const FloatingChatWidget: React.FC = () => {
   useEffect(() => {
     if (open) setTimeout(() => inputRef.current?.focus(), 200);
   }, [open]);
+
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener('open-chat-widget', handler);
+    return () => window.removeEventListener('open-chat-widget', handler);
+  }, []);
 
   const sendMessage = async (text: string) => {
     const trimmed = text.trim();

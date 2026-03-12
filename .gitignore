@@ -7,3 +7,7 @@ dist/
 .DS_Store
 # n8n workflow files contain credentials — import manually into n8n, do not commit
 *_workflow.json
+# Claude Code session data
+.claude/
+# Local editor notes
+Web Edits.txt
