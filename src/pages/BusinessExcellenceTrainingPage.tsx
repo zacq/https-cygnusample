@@ -470,13 +470,14 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
                   Register for the Training Program
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
-                <motion.button
+                <motion.a
                   whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                  href="/BCIE-2026-Full-Course-Calendar.pdf"
+                  download="BCIE-2026-Program-Outline.pdf"
                   className="bg-white/10 hover:bg-white/18 border border-white/20 text-white px-10 py-5 rounded-2xl font-bold text-xl transition-all flex items-center gap-2"
-                  onClick={() => alert('Program outline PDF coming soon.')}
                 >
                   <Download className="w-5 h-5" /> Download Program Outline
-                </motion.button>
+                </motion.a>
               </div>
             </div>
           </motion.div>
