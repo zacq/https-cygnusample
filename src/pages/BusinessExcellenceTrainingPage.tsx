@@ -1,205 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import {
-  X, Send, Loader2, CheckCircle,
+  CheckCircle,
   RefreshCw, BarChart3, Target, DollarSign, Layers, Leaf,
   ArrowRight, ChevronDown, Download, Calendar,
   Users, HardHat, Briefcase, Building2, Sprout,
 } from 'lucide-react';
-
-// ─── Airtable (reuses booking credentials) ───────────────────────────────────
-const AIRTABLE_TOKEN = import.meta.env.VITE_BOOKING_AIRTABLE_TOKEN as string;
-const LEADS_BASE     = import.meta.env.VITE_BOOKING_AIRTABLE_BASE as string;
-const LEADS_TABLE    = import.meta.env.VITE_BOOKING_AIRTABLE_TABLE as string;
-
-// ─── Registration Modal ───────────────────────────────────────────────────────
-const initialForm = {
-  fullName: '', email: '', phone: '',
-  company: '', jobTitle: '', preferredDate: '',
-};
-
-const RegistrationModal: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
-  const [form,   setForm]   = useState(initialForm);
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errMsg, setErrMsg] = useState('');
-
-  React.useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : 'unset';
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [open]);
-
-  React.useEffect(() => {
-    if (!open) {
-      const t = setTimeout(() => { setStatus('idle'); setForm(initialForm); setErrMsg(''); }, 350);
-      return () => clearTimeout(t);
-    }
-  }, [open]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('loading');
-    setErrMsg('');
-    try {
-      const res = await fetch(`https://api.airtable.com/v0/${LEADS_BASE}/${LEADS_TABLE}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fields: {
-            Name:             form.fullName,
-            Email:            form.email,
-            Phone:            form.phone,
-            Company:          `${form.company} | ${form.jobTitle}`,
-            'Preferred Date': form.preferredDate,
-            Status:           'New',
-            Source:           'Business Excellence Training',
-          },
-        }),
-      });
-      if (!res.ok) { const e = await res.json(); throw new Error(e?.error?.message || 'Submission failed'); }
-      setStatus('success');
-    } catch (err: unknown) {
-      setStatus('error');
-      setErrMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
-    }
-  };
-
-  return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          key="backdrop"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-          onClick={onClose}
-        >
-          <motion.div
-            key="modal"
-            initial={{ opacity: 0, scale: 0.94, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 20 }}
-            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="h-1.5 bg-gradient-to-r from-brand-navy via-brand-blue to-brand-accent" />
-            <button
-              onClick={onClose} aria-label="Close"
-              className="absolute top-5 right-5 z-10 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-all"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="p-8">
-              {status === 'success' ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center py-10 text-center"
-                >
-                  <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mb-5">
-                    <CheckCircle className="w-10 h-10 text-emerald-500" />
-                  </div>
-                  <h2 className="text-2xl font-display font-bold text-brand-navy mb-3">You're Registered!</h2>
-                  <p className="text-slate-500 max-w-xs">
-                    Thank you. Our team will reach out with program details and confirmation within 24 hours.
-                  </p>
-                </motion.div>
-              ) : (
-                <>
-                  <div className="mb-6">
-                    <h2 className="text-xl font-display font-bold text-brand-navy mb-1">
-                      Register for the Program
-                    </h2>
-                    <p className="text-sm text-slate-500">
-                      3-Day Operations Excellence Training — online, certificate included
-                    </p>
-                  </div>
-
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Full Name *</label>
-                      <input required type="text" name="fullName" placeholder="Jane Doe"
-                        value={form.fullName} onChange={handleChange}
-                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Email *</label>
-                        <input required type="email" name="email" placeholder="you@company.com"
-                          value={form.email} onChange={handleChange}
-                          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Phone *</label>
-                        <input required type="tel" name="phone" placeholder="+254 7XX XXX XXX"
-                          value={form.phone} onChange={handleChange}
-                          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Company *</label>
-                        <input required type="text" name="company" placeholder="Your Company Ltd"
-                          value={form.company} onChange={handleChange}
-                          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Job Title *</label>
-                        <input required type="text" name="jobTitle" placeholder="Operations Manager"
-                          value={form.jobTitle} onChange={handleChange}
-                          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Preferred Training Date *</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                        <input required type="date" name="preferredDate"
-                          value={form.preferredDate} onChange={handleChange}
-                          min={new Date().toISOString().split('T')[0]}
-                          className="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    {status === 'error' && (
-                      <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-                        ⚠️ {errMsg}
-                      </p>
-                    )}
-
-                    <button type="submit" disabled={status === 'loading'}
-                      className="w-full bg-brand-navy hover:bg-brand-blue disabled:opacity-60 text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all"
-                    >
-                      {status === 'loading'
-                        ? <><Loader2 className="w-5 h-5 animate-spin" /> Submitting...</>
-                        : <><Send className="w-5 h-5" /> Register for the Training Program</>
-                      }
-                    </button>
-                    <p className="text-center text-xs text-slate-400">
-                      Our team will confirm your spot within 24 hours.
-                    </p>
-                  </form>
-                </>
-              )}
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
+import LeadCaptureModal from '../components/LeadCaptureModal';
 
 // ─── Day Section ──────────────────────────────────────────────────────────────
 interface Topic {
@@ -269,8 +76,9 @@ const DaySection: React.FC<DayProps> = ({ day, label, title, color, topics, flip
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 const BusinessExcellenceTrainingPage: React.FC = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modal, setModal] = useState<{ open: boolean; source: string }>({ open: false, source: '' });
   const finalRef = useRef<HTMLDivElement>(null);
+  const openModal = (source: string) => setModal({ open: true, source });
 
   const scrollToFinal = () =>
     finalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -326,7 +134,7 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
             className="flex flex-wrap gap-4"
           >
             <button
-              onClick={() => setModalOpen(true)}
+              onClick={() => openModal('BE Training — Reserve Seat')}
               className="bg-brand-blue hover:bg-brand-accent text-white px-9 py-4 rounded-xl font-bold text-lg transition-all shadow-2xl shadow-brand-blue/30 flex items-center gap-2 group"
             >
               Reserve Your Seat
@@ -410,7 +218,7 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
             ))}
 
             <button
-              onClick={scrollToFinal}
+              onClick={() => openModal('BE Training — Reserve Seat')}
               className="mt-4 w-full bg-brand-navy hover:bg-brand-blue text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 group"
             >
               Reserve Your Seat
@@ -656,7 +464,7 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
               <div className="flex flex-wrap justify-center gap-4">
                 <motion.button
                   whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-                  onClick={() => setModalOpen(true)}
+                  onClick={() => openModal('BE Training — Register for Training')}
                   className="bg-brand-blue hover:bg-brand-accent text-white px-10 py-5 rounded-2xl font-bold text-xl transition-all shadow-2xl shadow-brand-blue/40 flex items-center gap-2 group"
                 >
                   Register for the Training Program
@@ -675,7 +483,13 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
         </div>
       </section>
 
-      <RegistrationModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <LeadCaptureModal
+        isOpen={modal.open}
+        onClose={() => setModal(s => ({ ...s, open: false }))}
+        source={modal.source}
+        heading="Register for the Program"
+        subheading="3-Day Operations Excellence Training — online, certificate included"
+      />
     </main>
   );
 };

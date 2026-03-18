@@ -5,6 +5,7 @@ import {
   ArrowRight, Search, Heart, Download, Mail, BookOpen,
   ChevronRight, ChevronLeft, ShieldCheck, FileText, Clock, Calendar, BarChart2,
 } from 'lucide-react';
+import LeadCaptureModal from '../components/LeadCaptureModal';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Article {
@@ -168,7 +169,7 @@ const ArticleCard: React.FC<{ article: Article; index: number }> = ({ article, i
     className="group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:border-brand-blue/20 transition-all flex flex-col"
   >
     {/* Image */}
-    <div className="relative overflow-hidden aspect-video flex-shrink-0">
+    <Link to={`/blog/${article.slug}`} className="relative overflow-hidden aspect-video flex-shrink-0 block">
       <img
         src={article.image}
         alt={article.title}
@@ -180,7 +181,7 @@ const ArticleCard: React.FC<{ article: Article; index: number }> = ({ article, i
           {article.category}
         </span>
       </div>
-    </div>
+    </Link>
 
     {/* Content */}
     <div className="p-6 flex flex-col flex-1">
@@ -192,20 +193,21 @@ const ArticleCard: React.FC<{ article: Article; index: number }> = ({ article, i
           <Clock className="w-3.5 h-3.5" />{article.readTime}
         </span>
       </div>
-      <h3 className="text-[22px] font-bold text-brand-navy mb-3 leading-snug line-clamp-2 group-hover:text-brand-blue transition-colors">
-        {article.title}
-      </h3>
+      <Link to={`/blog/${article.slug}`}>
+        <h3 className="text-[22px] font-bold text-brand-navy mb-3 leading-snug line-clamp-2 group-hover:text-brand-blue transition-colors">
+          {article.title}
+        </h3>
+      </Link>
       <p className="text-sm text-slate-500 leading-relaxed mb-5 line-clamp-3 flex-1">
         {article.excerpt}
       </p>
       <div className="flex items-center justify-between mt-auto pt-1">
-        <a
-          href={`/blog/${article.slug}`}
-          onClick={e => e.preventDefault()}
+        <Link
+          to={`/blog/${article.slug}`}
           className="text-sm font-bold text-brand-blue hover:text-brand-navy transition-colors flex items-center gap-1"
         >
           → READ INSIGHT
-        </a>
+        </Link>
         <span className="flex items-center gap-1.5 text-xs text-slate-400">
           <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
           {article.likes}
@@ -222,10 +224,11 @@ const BlogPage: React.FC = () => {
   const [currentPage,    setCurrentPage]    = useState(1);
   const [newsletter,     setNewsletter]     = useState({ name: '', email: '' });
   const [newsletterSent, setNewsletterSent] = useState(false);
+  const [modal, setModal] = useState<{ open: boolean; source: string }>({ open: false, source: '' });
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const openBooking = () => window.dispatchEvent(new CustomEvent('open-booking-modal'));
+  const openBooking = (source: string) => setModal({ open: true, source });
 
   const featuredArticle = ARTICLES.find(a => a.featured)!;
   const gridArticles    = ARTICLES.filter(a => !a.featured);
@@ -289,7 +292,7 @@ const BlogPage: React.FC = () => {
             className="flex flex-wrap justify-center gap-4"
           >
             <button
-              onClick={openBooking}
+              onClick={() => openBooking('Blog — Expert Consultation')}
               className="bg-brand-blue hover:bg-brand-accent text-white px-8 py-4 rounded-xl font-bold transition-all shadow-xl shadow-brand-blue/30 flex items-center gap-2 group"
             >
               Request Expert Consultation
@@ -334,7 +337,7 @@ const BlogPage: React.FC = () => {
           className="group grid lg:grid-cols-2 rounded-3xl overflow-hidden border border-slate-100 shadow-lg hover:shadow-2xl transition-all"
         >
           {/* Image */}
-          <div className="relative overflow-hidden min-h-[280px] lg:min-h-[400px]">
+          <Link to={`/blog/${featuredArticle.slug}`} className="relative overflow-hidden min-h-[280px] lg:min-h-[400px] block">
             <img
               src={featuredArticle.image}
               alt={featuredArticle.title}
@@ -346,7 +349,7 @@ const BlogPage: React.FC = () => {
                 {featuredArticle.category}
               </span>
             </div>
-          </div>
+          </Link>
           {/* Content */}
           <div className="p-10 lg:p-14 flex flex-col justify-center bg-white">
             <div className="flex items-center gap-3 text-xs text-slate-400 mb-4">
@@ -357,19 +360,20 @@ const BlogPage: React.FC = () => {
                 <Clock className="w-3.5 h-3.5" />{featuredArticle.readTime}
               </span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-brand-navy mb-5 leading-tight">
-              {featuredArticle.title}
-            </h2>
+            <Link to={`/blog/${featuredArticle.slug}`}>
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-brand-navy mb-5 leading-tight hover:text-brand-blue transition-colors">
+                {featuredArticle.title}
+              </h2>
+            </Link>
             <p className="text-slate-500 leading-relaxed mb-8 text-lg">{featuredArticle.excerpt}</p>
             <div className="flex items-center justify-between">
-              <a
-                href={`/blog/${featuredArticle.slug}`}
-                onClick={e => e.preventDefault()}
+              <Link
+                to={`/blog/${featuredArticle.slug}`}
                 className="inline-flex items-center gap-2 bg-brand-navy hover:bg-brand-blue text-white px-7 py-3.5 rounded-xl font-bold text-sm transition-all group/btn"
               >
                 Read Insight
                 <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-              </a>
+              </Link>
               <span className="flex items-center gap-1.5 text-sm text-slate-400">
                 <Heart className="w-4 h-4 text-rose-400 fill-rose-400" />
                 {featuredArticle.likes}
@@ -533,7 +537,7 @@ const BlogPage: React.FC = () => {
                 Let our consultants help you implement world-class operational systems.
               </p>
               <button
-                onClick={openBooking}
+                onClick={() => openBooking('Blog — Request Consultation')}
                 className="w-full bg-brand-blue hover:bg-brand-accent text-white py-3 rounded-xl font-bold text-sm transition-all"
               >
                 Request a Consultation
@@ -578,7 +582,7 @@ const BlogPage: React.FC = () => {
             className="flex flex-wrap justify-center gap-4"
           >
             <button
-              onClick={openBooking}
+              onClick={() => openBooking('Blog — Schedule Consultation')}
               className="bg-brand-blue hover:bg-brand-accent text-white px-9 py-4 rounded-xl font-bold transition-all shadow-xl shadow-brand-blue/30 flex items-center gap-2 group"
             >
               Schedule a Consultation
@@ -700,6 +704,13 @@ const BlogPage: React.FC = () => {
           </motion.div>
         </div>
       </section>
+      <LeadCaptureModal
+        isOpen={modal.open}
+        onClose={() => setModal(s => ({ ...s, open: false }))}
+        source={modal.source}
+        heading="Connect with Our Experts"
+        subheading="Tell us about your challenge — we'll respond within 24 hours."
+      />
     </div>
   );
 };

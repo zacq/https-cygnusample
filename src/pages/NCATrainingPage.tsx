@@ -1,14 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useRef } from 'react';
+import { motion } from 'motion/react';
 import {
-  X, Send, Loader2, CheckCircle, Award, Monitor, CreditCard,
+  Award, Monitor, CreditCard,
   CalendarDays, Clock4, ChevronDown,
 } from 'lucide-react';
-
-// ─── Airtable config (reuses booking credentials) ────────────────────────────
-const AIRTABLE_TOKEN = import.meta.env.VITE_BOOKING_AIRTABLE_TOKEN as string;
-const LEADS_BASE     = import.meta.env.VITE_BOOKING_AIRTABLE_BASE as string;
-const LEADS_TABLE    = import.meta.env.VITE_BOOKING_AIRTABLE_TABLE as string;
+import LeadCaptureModal from '../components/LeadCaptureModal';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 interface Session {
@@ -30,229 +26,37 @@ const SESSIONS: Session[] = [
   { id: 8, date: '30 June 2026',   time: '9:00 AM – 4:00 PM', topic: 'Safety as a Value in the Construction Industry',          cpd: 5 },
 ];
 
-// ─── Registration Modal ───────────────────────────────────────────────────────
-interface RegistrationModalProps {
-  session:  Session | null;
-  onClose:  () => void;
-}
-
-const initialForm = { fullName: '', email: '', phone: '', company: '' };
-
-const RegistrationModal: React.FC<RegistrationModalProps> = ({ session, onClose }) => {
-  const [form,   setForm]   = useState(initialForm);
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errMsg, setErrMsg] = useState('');
-
-  const isOpen = session !== null;
-
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : 'unset';
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) {
-      const t = setTimeout(() => { setStatus('idle'); setForm(initialForm); setErrMsg(''); }, 350);
-      return () => clearTimeout(t);
-    }
-  }, [isOpen]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!session) return;
-    setStatus('loading');
-    setErrMsg('');
-
-    try {
-      const res = await fetch(`https://api.airtable.com/v0/${LEADS_BASE}/${LEADS_TABLE}`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${AIRTABLE_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fields: {
-            Name:             form.fullName,
-            Email:            form.email,
-            Phone:            form.phone,
-            Company:          form.company,
-            'Preferred Date': session.date,
-            'Preferred Time': session.time,
-            Status:           'New',
-            Source:           'NCA Training Registration',
-          },
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err?.error?.message || 'Submission failed');
-      }
-      setStatus('success');
-    } catch (err: unknown) {
-      setStatus('error');
-      setErrMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
-    }
-  };
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          key="backdrop"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-          onClick={onClose}
-        >
-          <motion.div
-            key="modal"
-            initial={{ opacity: 0, scale: 0.94, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 20 }}
-            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="h-1.5 bg-gradient-to-r from-brand-navy via-brand-blue to-brand-accent" />
-
-            <button
-              onClick={onClose}
-              aria-label="Close"
-              className="absolute top-5 right-5 z-10 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-all"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="p-8">
-              {status === 'success' ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center py-10 text-center"
-                >
-                  <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mb-5">
-                    <CheckCircle className="w-10 h-10 text-emerald-500" />
-                  </div>
-                  <h2 className="text-2xl font-display font-bold text-brand-navy mb-3">
-                    Registration Received!
-                  </h2>
-                  <p className="text-slate-500 mb-6 max-w-xs">
-                    You're registered for <span className="font-semibold text-brand-navy">{session?.date}</span>.
-                    Complete payment to confirm your spot.
-                  </p>
-                  <div className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-5 text-left space-y-2">
-                    <p className="text-sm font-bold text-brand-navy mb-3">Payment Instructions</p>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">Paybill Number</span>
-                      <span className="font-bold text-slate-800">453521</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">Account No.</span>
-                      <span className="font-bold text-slate-800">Your Company Name</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">Amount</span>
-                      <span className="font-bold text-slate-800">KES 4,000</span>
-                    </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <>
-                  {/* Header */}
-                  <div className="mb-6">
-                    <h2 className="text-xl font-display font-bold text-brand-navy mb-1">
-                      Register for Session
-                    </h2>
-                    {session && (
-                      <div className="bg-brand-blue/5 border border-brand-blue/20 rounded-xl px-4 py-3 mt-3">
-                        <p className="text-xs font-bold text-brand-blue uppercase tracking-wider mb-1">Selected Session</p>
-                        <p className="text-sm font-semibold text-brand-navy">{session.topic}</p>
-                        <p className="text-xs text-slate-500 mt-0.5">{session.date} · {session.time} · 5 CPD pts</p>
-                      </div>
-                    )}
-                  </div>
-
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Full Name *</label>
-                      <input
-                        required type="text" name="fullName" placeholder="John Doe"
-                        value={form.fullName} onChange={handleChange}
-                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Email *</label>
-                        <input
-                          required type="email" name="email" placeholder="you@company.com"
-                          value={form.email} onChange={handleChange}
-                          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Phone *</label>
-                        <input
-                          required type="tel" name="phone" placeholder="+254 7XX XXX XXX"
-                          value={form.phone} onChange={handleChange}
-                          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Company Name *</label>
-                      <input
-                        required type="text" name="company" placeholder="Your Company Ltd"
-                        value={form.company} onChange={handleChange}
-                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
-                      />
-                    </div>
-
-                    {status === 'error' && (
-                      <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-                        ⚠️ {errMsg}
-                      </p>
-                    )}
-
-                    <button
-                      type="submit"
-                      disabled={status === 'loading'}
-                      className="w-full bg-[#79B56E] hover:bg-[#5a9a4f] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all"
-                    >
-                      {status === 'loading'
-                        ? <><Loader2 className="w-5 h-5 animate-spin" /> Registering...</>
-                        : <><Send className="w-5 h-5" /> Confirm Registration</>
-                      }
-                    </button>
-
-                    <p className="text-center text-xs text-slate-400">
-                      Payment instructions will be shown after registration.
-                    </p>
-                  </form>
-                </>
-              )}
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
+const PaymentInstructions = () => (
+  <div className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-5 text-left space-y-2 mt-2">
+    <p className="text-sm font-bold text-brand-navy mb-3">Payment Instructions</p>
+    <div className="flex justify-between text-sm">
+      <span className="text-slate-500">Paybill Number</span>
+      <span className="font-bold text-slate-800">453521</span>
+    </div>
+    <div className="flex justify-between text-sm">
+      <span className="text-slate-500">Account No.</span>
+      <span className="font-bold text-slate-800">Your Company Name</span>
+    </div>
+    <div className="flex justify-between text-sm">
+      <span className="text-slate-500">Amount</span>
+      <span className="font-bold text-slate-800">KES 4,000</span>
+    </div>
+  </div>
+);
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 const NCATrainingPage: React.FC = () => {
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
 
   const scrollToCalendar = () =>
     calendarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const openSession = (session: Session) => {
+    setSelectedSession(session);
+    setModalOpen(true);
+  };
 
   return (
     <main>
@@ -300,7 +104,7 @@ const NCATrainingPage: React.FC = () => {
             className="flex flex-wrap justify-center gap-4"
           >
             <button
-              onClick={() => setSelectedSession(SESSIONS[0])}
+              onClick={() => openSession(SESSIONS[0])}
               className="bg-[#79B56E] hover:bg-[#5a9a4f] text-white px-9 py-4 rounded-xl font-bold text-lg transition-all shadow-xl"
             >
               Register Now
@@ -523,7 +327,7 @@ const NCATrainingPage: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 text-center">
                       <button
-                        onClick={() => setSelectedSession(session)}
+                        onClick={() => openSession(session)}
                         className="bg-[#79B56E] hover:bg-[#5a9a4f] text-white px-5 py-2 rounded-lg font-bold text-xs uppercase tracking-wide transition-all whitespace-nowrap shadow-sm hover:shadow-md"
                       >
                         Book Now
@@ -557,7 +361,7 @@ const NCATrainingPage: React.FC = () => {
                 </div>
                 <p className="text-sm text-slate-700 mb-4">{session.topic}</p>
                 <button
-                  onClick={() => setSelectedSession(session)}
+                  onClick={() => openSession(session)}
                   className="w-full bg-[#79B56E] hover:bg-[#5a9a4f] text-white py-2.5 rounded-xl font-bold text-sm transition-all"
                 >
                   Book Now
@@ -578,9 +382,14 @@ const NCATrainingPage: React.FC = () => {
         </div>
       </section>
 
-      <RegistrationModal
-        session={selectedSession}
-        onClose={() => setSelectedSession(null)}
+      <LeadCaptureModal
+        isOpen={modalOpen}
+        onClose={() => { setModalOpen(false); setSelectedSession(null); }}
+        source={selectedSession ? `NCA Training — ${selectedSession.topic}` : 'NCA Training'}
+        courseDetail={selectedSession?.topic}
+        heading="Register for Session"
+        subheading={selectedSession ? `${selectedSession.date} · ${selectedSession.time} · 5 CPD points` : undefined}
+        postSuccess={<PaymentInstructions />}
       />
     </main>
   );

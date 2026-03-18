@@ -11,27 +11,29 @@ import Hero              from './components/Hero';
 import TrustedTeams      from './components/TrustedTeams';
 import ProblemSection    from './components/ProblemSection';
 import SystemSection     from './components/SystemSection';
-import BookingModal      from './components/BookingModal';
+import LeadCaptureModal  from './components/LeadCaptureModal';
 import FloatingChatWidget from './components/FloatingChatWidget';
 import BusinessExcellencePage from './pages/BusinessExcellencePage';
 import NCATrainingPage from './pages/NCATrainingPage';
 import BusinessExcellenceTrainingPage from './pages/BusinessExcellenceTrainingPage';
 import ServicesPage from './pages/ServicesPage';
 import BlogPage      from './pages/BlogPage';
+import ArticlePage   from './pages/ArticlePage';
 
-// ─── CTA trigger phrases ──────────────────────────────────────────────────────
-const BOOKING_TRIGGERS = [
-  'Book a Strategy Call',
-  'Book a Call',
-  'Book a Consultation',
-  'Book Consultation',
-  'Request Consultation',
-  'Request Callback',
-  'Transform My Business',
-  'Get Started',
-  'Get Started Today',
-  'Initiate Strategy Call',
-];
+// ─── Global CTA trigger → source mapping ─────────────────────────────────────
+const CTA_SOURCE_MAP: Record<string, string> = {
+  'Book a Strategy Call':  'Home — Book Strategy Call',
+  'Book a Call':           'Navbar — Book a Call',
+  'Book a Consultation':   'General — Book Consultation',
+  'Book Consultation':     'General — Book Consultation',
+  'Request Consultation':  'General — Request Consultation',
+  'Request Callback':      'General — Request Callback',
+  'Transform My Business': 'General — Transform My Business',
+  'Get Started':           'General — Get Started',
+  'Get Started Today':     'General — Get Started Today',
+  'Initiate Strategy Call':'General — Initiate Strategy Call',
+};
+const BOOKING_TRIGGERS = Object.keys(CTA_SOURCE_MAP);
 
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 type NavChild = { name: string; to: string };
@@ -741,24 +743,25 @@ const Footer: React.FC = () => (
 
 // ─── Root App ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const [scrolled,     setScrolled]     = useState(false);
-  const [isModalOpen,  setIsModalOpen]  = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [modal, setModal] = useState<{ open: boolean; source: string }>({ open: false, source: '' });
 
-  const openBooking = () => setIsModalOpen(true);
+  const openBooking = (source = 'Navbar — Book a Call') => setModal({ open: true, source });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
-    const onBookingEvent = () => setIsModalOpen(true);
+    const onBookingEvent = () => setModal({ open: true, source: 'Chat Widget' });
 
-    // Global click intercept — any button/link with matching text opens the modal
+    // Global click intercept — maps button text → source
     const onGlobalClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const closest = target.closest('a, button');
       if (!closest) return;
       const text = closest.textContent?.trim() ?? '';
-      if (BOOKING_TRIGGERS.some(t => text.includes(t))) {
+      const matched = BOOKING_TRIGGERS.find(t => text.includes(t));
+      if (matched) {
         e.preventDefault();
-        setIsModalOpen(true);
+        setModal({ open: true, source: CTA_SOURCE_MAP[matched] || `CTA — ${matched}` });
       }
     };
 
@@ -776,7 +779,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="font-sans overflow-x-hidden">
-        <Navbar scrolled={scrolled} onBookingClick={openBooking} />
+        <Navbar scrolled={scrolled} onBookingClick={() => openBooking('Navbar — Book a Call')} />
         <Routes>
           <Route path="/" element={
             <>
@@ -796,11 +799,16 @@ export default function App() {
           <Route path="/training/business-excellence" element={<BusinessExcellenceTrainingPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/blog"     element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<ArticlePage />} />
         </Routes>
         <Footer />
       </div>
 
-      <BookingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <LeadCaptureModal
+        isOpen={modal.open}
+        onClose={() => setModal(s => ({ ...s, open: false }))}
+        source={modal.source}
+      />
       <FloatingChatWidget />
     </BrowserRouter>
   );

@@ -1,221 +1,26 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import {
-  X, Send, Loader2, CheckCircle, ArrowRight,
+  ArrowRight,
   ShieldCheck, Award, Globe, Building2, Truck,
   Wifi, Factory, Flame, Landmark, HardHat,
   Search, PenLine, Rocket, BadgeCheck, TrendingUp,
   CheckCircle2,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import LeadCaptureModal from '../components/LeadCaptureModal';
 
-// ─── Airtable ─────────────────────────────────────────────────────────────────
-const AIRTABLE_TOKEN = import.meta.env.VITE_BOOKING_AIRTABLE_TOKEN as string;
-const LEADS_BASE     = import.meta.env.VITE_BOOKING_AIRTABLE_BASE as string;
-const LEADS_TABLE    = import.meta.env.VITE_BOOKING_AIRTABLE_TABLE as string;
-
-const SERVICE_OPTIONS = [
-  'Management System Consultation',
-  'Work at Height Training',
-  'GWO Training',
-  'Lead Auditor Training',
-  'Cygnus Safety Outsourcing',
-  'General Inquiry',
-];
-
-// ─── Consultation Modal ───────────────────────────────────────────────────────
-const initialForm = {
-  fullName: '', email: '', phone: '',
-  company: '', service: '', message: '',
-};
-
-const ConsultationModal: React.FC<{
-  open: boolean;
-  defaultService?: string;
-  onClose: () => void;
-}> = ({ open, defaultService = '', onClose }) => {
-  const [form,   setForm]   = useState({ ...initialForm, service: defaultService });
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errMsg, setErrMsg] = useState('');
-
-  React.useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : 'unset';
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [open]);
-
-  React.useEffect(() => {
-    if (open) setForm({ ...initialForm, service: defaultService });
-  }, [open, defaultService]);
-
-  React.useEffect(() => {
-    if (!open) {
-      const t = setTimeout(() => { setStatus('idle'); setErrMsg(''); }, 350);
-      return () => clearTimeout(t);
-    }
-  }, [open]);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('loading');
-    setErrMsg('');
-    try {
-      const res = await fetch(`https://api.airtable.com/v0/${LEADS_BASE}/${LEADS_TABLE}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fields: {
-            Name:             form.fullName,
-            Email:            form.email,
-            Phone:            form.phone,
-            Company:          form.company,
-            'Preferred Date': form.service,   // reusing field for service interest
-            'Preferred Time': form.message,   // reusing field for message
-            Status:           'New',
-            Source:           'Services Page Consultation',
-          },
-        }),
-      });
-      if (!res.ok) { const e = await res.json(); throw new Error(e?.error?.message || 'Submission failed'); }
-      setStatus('success');
-    } catch (err: unknown) {
-      setStatus('error');
-      setErrMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
-    }
-  };
-
-  const inputClass = 'w-full border border-slate-200 rounded-xl px-4 py-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all';
-
-  return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          key="backdrop"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-          onClick={onClose}
-        >
-          <motion.div
-            key="modal"
-            initial={{ opacity: 0, scale: 0.94, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 20 }}
-            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="h-1.5 bg-gradient-to-r from-brand-navy via-brand-blue to-brand-accent" />
-            <button onClick={onClose} aria-label="Close"
-              className="absolute top-5 right-5 z-10 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-all"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="p-8">
-              {status === 'success' ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center py-10 text-center"
-                >
-                  <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mb-5">
-                    <CheckCircle className="w-10 h-10 text-emerald-500" />
-                  </div>
-                  <h2 className="text-2xl font-display font-bold text-brand-navy mb-3">Request Received!</h2>
-                  <p className="text-slate-500 max-w-xs">
-                    Thank you. A Cygnus consultant will be in touch within 24 hours to discuss your needs.
-                  </p>
-                </motion.div>
-              ) : (
-                <>
-                  <div className="mb-6">
-                    <h2 className="text-xl font-display font-bold text-brand-navy mb-1">
-                      Request a Free Consultation
-                    </h2>
-                    <p className="text-sm text-slate-500">No commitment — just clarity on how we can help.</p>
-                  </div>
-
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Full Name *</label>
-                        <input required type="text" name="fullName" placeholder="Jane Doe"
-                          value={form.fullName} onChange={handleChange} className={inputClass} />
-                      </div>
-                      <div>
-                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Phone *</label>
-                        <input required type="tel" name="phone" placeholder="+254 7XX XXX XXX"
-                          value={form.phone} onChange={handleChange} className={inputClass} />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Email *</label>
-                      <input required type="email" name="email" placeholder="you@company.com"
-                        value={form.email} onChange={handleChange} className={inputClass} />
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Company *</label>
-                      <input required type="text" name="company" placeholder="Your Company Ltd"
-                        value={form.company} onChange={handleChange} className={inputClass} />
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Service of Interest *</label>
-                      <select required name="service" value={form.service} onChange={handleChange}
-                        className={`${inputClass} appearance-none bg-white`}
-                      >
-                        <option value="" disabled>Select a service…</option>
-                        {SERVICE_OPTIONS.map(s => (
-                          <option key={s} value={s}>{s}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-1.5 block">Message</label>
-                      <textarea name="message" rows={3} placeholder="Tell us about your current challenges or requirements…"
-                        value={form.message} onChange={handleChange}
-                        className={`${inputClass} resize-none`}
-                      />
-                    </div>
-
-                    {status === 'error' && (
-                      <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-                        ⚠️ {errMsg}
-                      </p>
-                    )}
-
-                    <button type="submit" disabled={status === 'loading'}
-                      className="w-full bg-brand-navy hover:bg-brand-blue disabled:opacity-60 text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all"
-                    >
-                      {status === 'loading'
-                        ? <><Loader2 className="w-5 h-5 animate-spin" /> Sending…</>
-                        : <><Send className="w-5 h-5" /> Request Free Consultation</>
-                      }
-                    </button>
-                  </form>
-                </>
-              )}
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
+
 const ServicesPage: React.FC = () => {
-  const [modalOpen,       setModalOpen]       = useState(false);
-  const [selectedService, setSelectedService] = useState('');
+  const [modal, setModal] = useState<{ open: boolean; source: string; courseDetail?: string }>({
+    open: false, source: '',
+  });
   const finalRef = useRef<HTMLDivElement>(null);
 
-  const openModal = (service = '') => { setSelectedService(service); setModalOpen(true); };
+  const openModal = (source: string, courseDetail = '') =>
+    setModal({ open: true, source, courseDetail });
   const scrollToFinal = () => finalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   const CERTIFICATIONS = [
@@ -335,7 +140,7 @@ const ServicesPage: React.FC = () => {
 
             <motion.button
               whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-              onClick={() => openModal()}
+              onClick={() => openModal('Services — Free Consultation')}
               className="bg-brand-blue hover:bg-brand-accent text-white px-9 py-4 rounded-xl font-bold text-lg transition-all shadow-2xl shadow-brand-blue/30 flex items-center gap-2 group"
             >
               Request a Free Consultation
@@ -456,7 +261,7 @@ const ServicesPage: React.FC = () => {
 
           <div className="text-center">
             <button
-              onClick={() => openModal()}
+              onClick={() => openModal('Services — Free Consultation')}
               className="bg-brand-navy hover:bg-brand-blue text-white px-9 py-4 rounded-xl font-bold transition-all inline-flex items-center gap-2 group"
             >
               Request Free Consultation
@@ -567,7 +372,7 @@ const ServicesPage: React.FC = () => {
                     ))}
                   </ul>
                   <button
-                    onClick={() => openModal(svc.title)}
+                    onClick={() => openModal(`Services — Get Started: ${svc.title}`, svc.title)}
                     className="bg-brand-navy hover:bg-brand-blue text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-1.5 group/btn"
                   >
                     Get Started
@@ -667,7 +472,7 @@ const ServicesPage: React.FC = () => {
               <div className="flex flex-wrap justify-center gap-4">
                 <motion.button
                   whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-                  onClick={() => openModal()}
+                  onClick={() => openModal('Services — Free Consultation')}
                   className="bg-brand-blue hover:bg-brand-accent text-white px-10 py-5 rounded-2xl font-bold text-xl transition-all shadow-2xl shadow-brand-blue/40 flex items-center gap-2 group"
                 >
                   Request Free Consultation
@@ -685,10 +490,13 @@ const ServicesPage: React.FC = () => {
         </div>
       </section>
 
-      <ConsultationModal
-        open={modalOpen}
-        defaultService={selectedService}
-        onClose={() => setModalOpen(false)}
+      <LeadCaptureModal
+        isOpen={modal.open}
+        onClose={() => setModal(s => ({ ...s, open: false }))}
+        source={modal.source}
+        courseDetail={modal.courseDetail}
+        heading="Request a Free Consultation"
+        subheading="No commitment — just clarity on how we can help."
       />
     </main>
   );
