@@ -170,7 +170,7 @@ const Hero: React.FC = () => {
           >
             {[
               { value: '15+', label: 'Years Experience' },
-              { value: '500+', label: 'Projects Delivered' },
+              { value: '50+', label: 'Projects Delivered' },
               { value: '98%', label: 'Client Satisfaction' },
             ].map((stat, i) => (
               <React.Fragment key={stat.label}>
@@ -240,7 +240,7 @@ const Hero: React.FC = () => {
                   />
                 ))}
               </div>
-              <div className="mt-3 text-white text-sm font-medium">12 ongoing engagements</div>
+              <div className="mt-3 text-white text-sm font-medium">7 ongoing engagements</div>
             </div>
           </motion.div>
 
@@ -254,8 +254,8 @@ const Hero: React.FC = () => {
             <div className="glass-card rounded-2xl px-5 py-4 flex items-center gap-3 animate-float" style={{ animationDelay: '1s' }}>
               <div className="w-9 h-9 rounded-full bg-brand-gold/20 flex items-center justify-center text-lg">⭐</div>
               <div>
-                <div className="text-white text-sm font-bold">GWO Certified</div>
-                <div className="text-slate-400 text-xs">Safety Standard</div>
+                <div className="text-white text-sm font-bold">Profitability, Growth</div>
+                <div className="text-slate-400 text-xs">and Sustainability</div>
               </div>
             </div>
           </motion.div>

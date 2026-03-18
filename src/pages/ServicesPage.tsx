@@ -222,7 +222,6 @@ const ServicesPage: React.FC = () => {
     { label: 'ISO 9001',       sub: 'Quality Management'     },
     { label: 'ISO 45001',      sub: 'OH&S Management'        },
     { label: 'ISO 14001',      sub: 'Environmental Mgmt'     },
-    { label: 'GWO',            sub: 'Wind Organisation'      },
     { label: 'Lean Six Sigma', sub: 'Process Excellence'     },
   ];
 
@@ -259,13 +258,6 @@ const ServicesPage: React.FC = () => {
       bullets: ['Harness use & anchor systems', 'Fall prevention protocols', 'Emergency rescue procedures'],
     },
     {
-      title: 'GWO Training',
-      desc: 'Safety certification training designed for the wind turbine industry. Participants learn to identify and mitigate risks in wind turbine operations.',
-      image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80',
-      tag: 'GWO Standard',
-      bullets: ['Basic safety & first aid', 'Fire awareness', 'Manual handling'],
-    },
-    {
       title: 'Lead Auditor Training',
       desc: 'Advance your career with internationally recognized lead auditor certifications. Covering ISO 45001, ISO 9001, and ISO 14001 management systems.',
       image: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800&q=80',
@@ -282,7 +274,7 @@ const ServicesPage: React.FC = () => {
   ];
 
   const TRUST = [
-    { icon: <Award className="w-6 h-6" />,       title: '35+ Years Experience',       desc: 'Decades of field-tested expertise across critical industries in East Africa and beyond.' },
+    { icon: <Award className="w-6 h-6" />,       title: '15+ Years Experience',       desc: 'Decades of field-tested expertise across critical industries in East Africa and beyond.' },
     { icon: <ShieldCheck className="w-6 h-6" />,  title: 'ISO Implementation Specialists', desc: 'End-to-end support for ISO 9001, 14001, and 45001 management system design and certification.' },
     { icon: <BadgeCheck className="w-6 h-6" />,   title: 'Certified Training Providers',  desc: 'Internationally accredited training programs delivered by certified professionals.' },
     { icon: <Globe className="w-6 h-6" />,        title: 'Multi-Industry Expertise',    desc: 'Serving telecoms, construction, manufacturing, oil & gas, logistics, and government sectors.' },
@@ -313,7 +305,7 @@ const ServicesPage: React.FC = () => {
             </motion.span>
 
             <h1 className="text-5xl md:text-6xl font-display text-white leading-[1.05] mb-6">
-              35+ Years Building Safer,{' '}
+              15+ Years Building Safer,{' '}
               <span className="italic text-brand-accent">Smarter Operations</span>
             </h1>
 
@@ -370,7 +362,7 @@ const ServicesPage: React.FC = () => {
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute -bottom-6 -left-8 bg-brand-navy border border-white/10 rounded-2xl px-6 py-5 shadow-2xl"
             >
-              <div className="text-4xl font-bold text-white">35+</div>
+              <div className="text-4xl font-bold text-white">15+</div>
               <div className="text-brand-accent text-sm font-semibold">Years of Experience</div>
             </motion.div>
             <motion.div
@@ -547,9 +539,8 @@ const ServicesPage: React.FC = () => {
             </motion.h2>
           </div>
 
-          {/* First 4 in 2x2 */}
           <div className="grid md:grid-cols-2 gap-6 mb-6">
-            {SERVICES.slice(0, 4).map((svc, i) => (
+            {SERVICES.map((svc, i) => (
               <motion.div
                 key={svc.title}
                 initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -587,42 +578,6 @@ const ServicesPage: React.FC = () => {
             ))}
           </div>
 
-          {/* 5th service — centred, half-width on desktop */}
-          <div className="flex justify-center">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.6 }}
-              className="group relative overflow-hidden rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all bg-white w-full md:max-w-[49%]"
-            >
-              <div className="relative overflow-hidden h-52">
-                <img src={SERVICES[4].image} alt={SERVICES[4].title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/70 via-brand-navy/20 to-transparent" />
-                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-brand-blue/80 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-sm">
-                  {SERVICES[4].tag}
-                </span>
-              </div>
-              <div className="p-7">
-                <h3 className="text-xl font-bold text-brand-navy mb-3">{SERVICES[4].title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed mb-4">{SERVICES[4].desc}</p>
-                <ul className="space-y-1.5 mb-6">
-                  {SERVICES[4].bullets.map(b => (
-                    <li key={b} className="flex items-center gap-2 text-xs text-slate-600">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  onClick={() => openModal(SERVICES[4].title)}
-                  className="bg-brand-navy hover:bg-brand-blue text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-1.5 group/btn"
-                >
-                  Get Started
-                  <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />
-                </button>
-              </div>
-            </motion.div>
-          </div>
         </div>
       </section>
 

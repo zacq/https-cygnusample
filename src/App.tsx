@@ -18,7 +18,6 @@ import NCATrainingPage from './pages/NCATrainingPage';
 import BusinessExcellenceTrainingPage from './pages/BusinessExcellenceTrainingPage';
 import ServicesPage from './pages/ServicesPage';
 import BlogPage      from './pages/BlogPage';
-import AboutPage     from './pages/AboutPage';
 
 // ─── CTA trigger phrases ──────────────────────────────────────────────────────
 const BOOKING_TRIGGERS = [
@@ -50,7 +49,6 @@ const navLinks: NavLink[] = [
   },
   { name: 'Services', to: '/services' },
   { name: 'Blog',     to: '/blog' },
-  { name: 'About Us', to: '/about' },
   { name: 'Contact',  href: '#contact' },
 ];
 
@@ -329,8 +327,8 @@ const services = [
     tag: 'Core Service',
   },
   {
-    title: 'Safety Training — WAH & GWO',
-    desc: 'Comprehensive certified safety training: Working at Heights (WAH) and Global Wind Organisation (GWO) standards for your workforce.',
+    title: 'Safety & continuous Improvement Training',
+    desc: 'Comprehensive certified safety training standards for your workforce.',
     image: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&q=80',
     tag: 'Certification',
   },
@@ -507,13 +505,6 @@ const trainingCourses = [
     desc: 'Comprehensive certification covering harness use, anchor points, rescue procedures, and fall prevention protocols.',
     duration: '2–3 Days',
     level: 'All Levels',
-  },
-  {
-    code: 'GWO',
-    title: 'Global Wind Organisation',
-    desc: 'International standard safety training for wind energy workers — basic safety, first aid, fire awareness, manual handling.',
-    duration: '4–5 Days',
-    level: 'Industry Certified',
   },
   {
     code: '5S',
@@ -695,7 +686,7 @@ const Footer: React.FC = () => (
       <div>
         <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-6">Services</h4>
         <ul className="space-y-3 text-slate-400 text-sm">
-          {['Lean Implementation', 'WAH Training', 'GWO Training', 'Safety Management', 'Systems Consulting'].map(s => (
+          {['Lean Implementation', 'WAH Training', 'Safety Management', 'Systems Consulting'].map(s => (
             <li key={s}><a href="#services" className="hover:text-brand-blue transition-colors">{s}</a></li>
           ))}
         </ul>
@@ -805,7 +796,6 @@ export default function App() {
           <Route path="/training/business-excellence" element={<BusinessExcellenceTrainingPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/blog"     element={<BlogPage />} />
-          <Route path="/about"    element={<AboutPage />} />
         </Routes>
         <Footer />
       </div>

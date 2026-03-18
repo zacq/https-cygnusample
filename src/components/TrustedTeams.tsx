@@ -14,7 +14,7 @@ const MARQUEE_ITEMS = [...INDUSTRIES, ...INDUSTRIES];
 
 const stats = [
   { icon: <Award className="w-6 h-6" />, value: '15+', label: 'Years of Excellence' },
-  { icon: <Briefcase className="w-6 h-6" />, value: '500+', label: 'Projects Delivered' },
+  { icon: <Briefcase className="w-6 h-6" />, value: '50+', label: 'Projects Delivered' },
   { icon: <Users className="w-6 h-6" />, value: '200+', label: 'Organizations Served' },
 ];
 
@@ -88,7 +88,7 @@ const TrustedTeams: React.FC = () => {
         transition={{ delay: 0.3 }}
         className="max-w-2xl mx-auto mt-12 px-6 flex flex-wrap justify-center gap-4"
       >
-        {['GWO Certified', 'WAH Certified', 'ISO 9001 Aligned', 'Lean Six Sigma'].map(badge => (
+        {['WAH Certified', 'ISO 9001 Aligned', 'Lean Six Sigma'].map(badge => (
           <span key={badge} className="px-4 py-2 rounded-full bg-brand-navy/5 border border-brand-navy/10 text-brand-navy text-sm font-semibold flex items-center gap-2">
             <span className="text-brand-blue">✓</span> {badge}
           </span>

@@ -309,8 +309,8 @@ const BlogPage: React.FC = () => {
       <div className="bg-slate-50 border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-wrap justify-center gap-10 text-sm">
           {[
-            { stat: '35+',  label: 'Years Experience' },
-            { stat: '500+', label: 'Organizations Supported' },
+            { stat: '15+',  label: 'Years Experience' },
+            { stat: '50+', label: 'Organizations Supported' },
             { stat: 'ISO',  label: 'Implementation Specialists' },
           ].map(({ stat, label }) => (
             <div key={label} className="flex items-center gap-2 text-slate-500">

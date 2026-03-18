@@ -1,57 +1,64 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Search, PenLine, Rocket, BarChart3, ArrowRight } from 'lucide-react';
+import {
+  ClipboardList, Layers, Wrench, BadgeCheck, TrendingUp, ArrowRight,
+} from 'lucide-react';
 
 const steps = [
   {
-    number: '01',
-    icon: <Search className="w-6 h-6" />,
+    step: 'Step 1',
+    icon: <ClipboardList className="w-6 h-6" />,
     title: 'Assess',
-    subtitle: 'Deep-dive operations audit',
-    desc: 'We map your current workflows, identify waste streams, safety gaps, and performance bottlenecks with precision diagnostics.',
+    desc: 'Evaluate operational challenges, risks, and compliance gaps.',
     color: 'from-blue-600 to-blue-400',
-    glow: 'shadow-blue-500/30',
   },
   {
-    number: '02',
-    icon: <PenLine className="w-6 h-6" />,
+    step: 'Step 2',
+    icon: <Layers className="w-6 h-6" />,
     title: 'Design',
-    subtitle: 'Tailored Lean roadmap',
-    desc: 'Our consultants co-create a bespoke Lean & Kaizen implementation plan aligned with your industry, culture, and goals.',
+    desc: 'Develop tailored management systems aligned with industry standards.',
     color: 'from-violet-600 to-violet-400',
-    glow: 'shadow-violet-500/30',
   },
   {
-    number: '03',
-    icon: <Rocket className="w-6 h-6" />,
+    step: 'Step 3',
+    icon: <Wrench className="w-6 h-6" />,
     title: 'Implement',
-    subtitle: 'Hands-on deployment',
-    desc: 'We embed alongside your team — training staff, deploying 5S systems, and building the daily management routines that stick.',
+    desc: 'Deploy operational frameworks and training programs across the organization.',
     color: 'from-brand-blue to-brand-accent',
-    glow: 'shadow-brand-blue/30',
   },
   {
-    number: '04',
-    icon: <BarChart3 className="w-6 h-6" />,
-    title: 'Sustain',
-    subtitle: 'Continuous monitoring',
-    desc: 'We establish KPI dashboards, coaching cadences, and governance systems so the improvements compound — forever.',
+    step: 'Step 4',
+    icon: <BadgeCheck className="w-6 h-6" />,
+    title: 'Certify',
+    desc: 'Prepare organizations for global certifications and regulatory compliance.',
+    color: 'from-amber-500 to-amber-400',
+  },
+  {
+    step: 'Step 5',
+    icon: <TrendingUp className="w-6 h-6" />,
+    title: 'Improve',
+    desc: 'Drive continuous operational improvement and sustain performance gains.',
     color: 'from-emerald-600 to-emerald-400',
-    glow: 'shadow-emerald-500/30',
   },
 ];
 
 const SystemSection: React.FC = () => {
   return (
-    <section id="about" className="py-28 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="about" className="py-24 bg-brand-navy overflow-hidden relative">
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-blue/40 to-transparent" />
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)', backgroundSize: '40px 40px' }}
+      />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-14">
           <motion.span
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 rounded-full bg-brand-blue/10 border border-brand-blue/20 text-brand-blue text-xs font-bold uppercase tracking-widest mb-4"
+            className="inline-block px-4 py-1.5 rounded-full bg-brand-blue/20 border border-brand-blue/30 text-brand-accent text-xs font-bold uppercase tracking-widest mb-4"
           >
             How We Work
           </motion.span>
@@ -60,73 +67,57 @@ const SystemSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl font-display text-brand-navy mb-5"
+            className="text-4xl md:text-5xl font-display text-white mb-5"
           >
-            A Proven System for{' '}
-            <span className="italic text-brand-blue">Lasting Change</span>
+            Our Approach to{' '}
+            <span className="italic text-brand-accent">Operational Excellence</span>
           </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-lg text-slate-500 max-w-xl mx-auto"
-          >
-            Our four-phase engagement methodology is battle-tested across 500+ projects in East Africa's most demanding industries.
-          </motion.p>
         </div>
 
-        {/* Steps — desktop: horizontal row; mobile: stacked */}
-        <div className="grid md:grid-cols-4 gap-6 mb-16">
+        {/* Steps */}
+        <div className="grid md:grid-cols-5 gap-4 mb-14">
           {steps.map((step, i) => (
             <motion.div
-              key={step.number}
-              initial={{ opacity: 0, y: 30 }}
+              key={step.step}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.12, duration: 0.6 }}
+              transition={{ delay: i * 0.1, duration: 0.6 }}
               className="relative group"
             >
-              {/* Connector line (desktop only, not on last item) */}
+              {/* Connector arrow */}
               {i < steps.length - 1 && (
-                <div className="hidden md:block absolute top-10 left-[calc(100%+0px)] w-full h-px z-0">
-                  <div className="w-full h-full bg-gradient-to-r from-slate-200 to-slate-200 relative overflow-hidden">
-                    <motion.div
-                      initial={{ scaleX: 0 }}
-                      whileInView={{ scaleX: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.4 + i * 0.15, duration: 0.7 }}
-                      className="absolute inset-0 bg-gradient-to-r from-brand-blue to-brand-accent origin-left"
-                    />
-                  </div>
+                <div className="hidden md:flex absolute top-8 left-[calc(100%+2px)] w-[calc(100%-4px)] items-center justify-center z-10 pointer-events-none">
+                  <motion.div
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 + i * 0.12, duration: 0.5 }}
+                    className="w-full h-px bg-brand-blue/40 origin-left"
+                  />
+                  <ArrowRight className="w-3 h-3 text-brand-blue/50 -ml-1 shrink-0" />
                 </div>
               )}
 
-              <div className="bg-slate-50 border border-slate-100 rounded-3xl p-7 h-full hover:shadow-xl hover:border-brand-blue/20 transition-all duration-300 group-hover:-translate-y-1">
-                {/* Number */}
-                <span className="text-6xl font-bold text-slate-100 leading-none block mb-4 group-hover:text-brand-blue/10 transition-colors">
-                  {step.number}
-                </span>
-
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 h-full hover:bg-white/10 hover:border-brand-blue/40 transition-all text-center">
                 {/* Icon */}
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center text-white mb-5 shadow-lg ${step.glow}`}>
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center text-white mx-auto mb-4 shadow-lg`}>
                   {step.icon}
                 </div>
-
-                <h3 className="text-xl font-bold text-brand-navy mb-1">{step.title}</h3>
-                <p className="text-xs font-semibold text-brand-blue uppercase tracking-wider mb-3">{step.subtitle}</p>
-                <p className="text-slate-500 text-sm leading-relaxed">{step.desc}</p>
+                <p className="text-xs font-bold text-brand-accent uppercase tracking-widest mb-2">{step.step}</p>
+                <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
+                <p className="text-slate-400 text-xs leading-relaxed">{step.desc}</p>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Bottom CTA strip */}
+        {/* Bottom CTA */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-brand-navy rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6"
+          className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6"
         >
           <div>
             <h3 className="text-2xl md:text-3xl font-display text-white mb-2">
