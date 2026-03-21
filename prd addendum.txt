@@ -1,0 +1,321 @@
+🧾 PRD ADDENDUM — Business Excellence Training + Core Offering Integration
+
+Version: 1.2
+Applies to:
+
+/training/business-excellence
+Home page (Training section)
+Global content strategy
+1. 🔥 CORE STRATEGIC SHIFT
+BEFORE
+
+Training page = “course content”
+
+AFTER
+
+Training page = gateway into Cygnus consulting system
+
+👉 The training becomes:
+
+a product
+a lead qualifier
+a preview of full transformation
+2. 🧠 BUSINESS EXCELLENCE TRAINING PAGE — FULL STRUCTURE
+2.1 Section Order (Upgraded)
+Hero
+↓
+Why This Training Matters
+↓
+360° Operational Excellence System (NEW CORE SECTION)
+↓
+Engagement Tiers (Consulting Bridge)
+↓
+Implementation Roadmap (Visual Authority)
+↓
+Key Success Metrics (ROI Proof)
+↓
+Program Breakdown (Day 1–3)
+↓
+Who This Training Is For
+↓
+Testimonials / Trust
+↓
+Final Registration CTA
+3. 🧩 NEW CORE SECTION — “360° Operational Excellence System”
+📍 Placement
+
+Immediately after Why This Training Matters
+
+Section Title
+
+The Cygnus 360° Operational Excellence System
+
+Purpose
+
+Position Cygnus as:
+👉 system builders, not trainers
+
+Content Structure
+Grid (2-column desktop)
+Area	Description
+Process Excellence	VSM, Flow optimization, SMED, takt alignment
+Continuous Improvement	DMAIC, daily management, sustainability gates
+Financial Impact	ROI validation, cost reduction
+People & Culture	Leader Std Work, Kaizen culture
+Quality Systems	Zero-defect design, control plans
+Safety & Compliance	ISO + ESG integration
+Strategy Deployment	Hoshin Kanri execution
+Technology & BPMN	Process modeling, dashboards
+UX
+Icon-driven grid
+Hover reveal details
+Each item links to:
+/services
+/business-excellence
+4. 🏗️ ENGAGEMENT TIERS SECTION (CRITICAL)
+Title
+
+Choose Your Path to Operational Excellence
+
+Layout
+
+3 cards (horizontal)
+
+Tier 1 — Diagnostic
+Duration: 2–4 weeks
+Deliverables:
+Operational assessment
+BPMN As-Is mapping
+Opportunity register
+Financial quantification
+Tier 2 — Improvement Project
+Duration: 3–6 months
+Deliverables:
+DMAIC execution
+Kaizen events
+Future-state BPMN
+Control plans
+Tier 3 — 360° Transformation
+Duration: 12–24 months
+Deliverables:
+Full deployment
+Belt training
+Hoshin Kanri
+Monthly reviews
+🔥 Key Insight
+
+This section:
+👉 converts training visitors into consulting buyers
+
+5. 🛣️ IMPLEMENTATION ROADMAP (AUTHORITY SECTION)
+Title
+
+From Assessment to Sustained Excellence
+
+Layout
+
+Timeline (horizontal desktop, vertical mobile)
+
+Phase 0 — Initiation
+Assessment at a glance
+Phase 1 — Foundation (Months 1–3)
+Baseline + BPMN mapping
+Opportunity register
+Sponsor alignment
+Phase 2 — Deployment (Months 3–9)
+DMAIC execution
+Kaizen events
+Hoshin X-matrix
+Leader standard work
+Phase 3 — Embedding (Months 9–18)
+Belt certification
+Process registry
+Financial validation
+Phase 4 — Sustainability (18+)
+Continuous pipeline
+Governance audits
+Replication
+UX Enhancement
+Animated progress line
+Scroll-triggered reveal
+Each phase expandable
+6. 📊 KEY SUCCESS METRICS SECTION (ROI WEAPON)
+Title
+
+How We Measure Impact
+
+Table Format
+KPI	Target
+Lead Time	30–50% reduction
+FPY	>98%
+OEE	>85%
+COPQ	>20% reduction
+Sigma Level	≥ 4.5
+Engagement	100%
+BPMN Coverage	100%
+Compliance	Zero non-conformance
+🔥 Purpose
+
+This section does ONE thing:
+
+👉 justifies price before it’s mentioned
+
+7. 🎓 PROGRAM CONTENT (KEEP — RESTRUCTURE)
+
+Convert Day 1–3 into:
+
+Timeline Layout
+Day 1 — Foundation
+Continuous Improvement
+Data for Decisions
+Day 2 — Strategy & Finance
+Hoshin Kanri
+Financial leadership
+Day 3 — Sustainability
+Lean Six Sigma
+ESG
+8. 🧱 HOME PAGE — TRAINING SECTION UPGRADE
+CURRENT ISSUE
+
+3 tiles → incomplete positioning
+
+✅ ADD 4TH TILE (NEW — CRITICAL)
+Title
+
+Operational Excellence Transformation
+
+Subtitle
+
+From Training to Full Business Impact
+
+Description
+
+Learn how to implement Lean systems, BPMN governance, and financial performance frameworks that deliver measurable business results.
+
+Badge
+
+Advanced Program
+
+CTA
+
+Explore Program →
+
+Link
+
+/training/business-excellence
+
+🔥 Strategic Role
+
+This becomes:
+👉 bridge between training & consulting
+
+9. ⭐ TESTIMONIALS SECTION (HOME PAGE)
+Placement
+
+Between:
+👉 SystemSection → CTASection
+
+Title
+
+What Our Clients Say
+
+Component
+
+Auto-scrolling carousel (right → left)
+
+Content Source
+
+Google Reviews
+https://maps.app.goo.gl/U1SZu5NKLD6A3mz79
+
+Card Structure
+Name
+Role / Company
+Rating ⭐⭐⭐⭐⭐
+Short quote
+UX Behavior
+Infinite scroll
+Pause on hover
+Mobile swipe enabled
+🔥 Impact
+
+This adds:
+👉 social proof = conversion multiplier
+
+10. 🔗 EDITORIAL LINKS (SEO + AUTHORITY)
+New Rule Across Site
+
+Every major paragraph should include:
+
+Internal Links
+/services
+/business-excellence
+/training/business-excellence
+/blog
+Example
+
+Instead of:
+
+Improve operational efficiency using Lean
+
+Use:
+
+Improve operational efficiency using Lean systems
+ and structured Business Excellence programs
+
+External Links (Authority Boost)
+
+Use sparingly:
+
+ISO → https://www.iso.org
+Lean → https://www.lean.org
+Six Sigma → https://asq.org
+11. 🧠 “WHY CYGNUS” CONTENT — RELOCATION
+Move to:
+Primary Location
+
+👉 /business-excellence page (above CTA)
+
+Secondary
+
+👉 Home page (below Services)
+
+Why?
+
+Because it answers:
+
+👉 “Why should I trust you?”
+Right before conversion.
+
+12. 🧬 FINAL ARCHITECTURE SHIFT
+
+You now have:
+
+Training → Education
+↓
+System → Authority
+↓
+Tiers → Monetization
+↓
+Metrics → Justification
+↓
+CTA → Conversion
+13. 🚀 WHAT YOU JUST BUILT
+
+This is no longer:
+
+❌ Training page
+❌ Consulting page
+
+This is now:
+
+✅ Transformation funnel
+✅ Authority engine
+✅ Revenue system
+
+⚡ FINAL STRATEGIC INSIGHT
+
+Your strongest differentiator is now crystal clear:
+
+Cygnus does not sell training.
+Cygnus installs systems that produce measurable business results.

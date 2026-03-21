@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   CheckCircle,
   RefreshCw, BarChart3, Target, DollarSign, Layers, Leaf,
   ArrowRight, ChevronDown, Download, Calendar,
   Users, HardHat, Briefcase, Building2, Sprout,
+  Network, TrendingUp, ShieldCheck, Cpu,
 } from 'lucide-react';
 import LeadCaptureModal from '../components/LeadCaptureModal';
 
@@ -225,6 +227,266 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ── 360° OE System ───────────────────────────────────────────────── */}
+      <section className="py-24 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <motion.p
+              initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              className="text-brand-blue font-bold uppercase tracking-widest text-sm mb-3"
+            >
+              Holistic Framework
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl font-display text-brand-navy"
+            >
+              The Cygnus 360° Operational{' '}
+              <span className="italic text-brand-blue">Excellence System</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              transition={{ delay: 0.18 }}
+              className="text-slate-500 max-w-xl mx-auto mt-4 text-lg"
+            >
+              Eight interconnected pillars that together define a fully transformed, high-performing organisation.
+            </motion.p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { icon: <RefreshCw className="w-6 h-6" />,   title: 'Process Excellence',     desc: 'VSM, flow optimisation, SMED, and takt time alignment.',       link: '/services' },
+              { icon: <TrendingUp className="w-6 h-6" />,  title: 'Continuous Improvement', desc: 'DMAIC, daily management boards, and sustainability gates.',     link: '/services' },
+              { icon: <DollarSign className="w-6 h-6" />,  title: 'Financial Impact',       desc: 'ROI validation, cost-of-poor-quality reduction frameworks.',   link: '/business-excellence' },
+              { icon: <Users className="w-6 h-6" />,       title: 'People & Culture',       desc: 'Leader Standard Work, Kaizen culture, engagement metrics.',    link: '/business-excellence' },
+              { icon: <ShieldCheck className="w-6 h-6" />, title: 'Quality Systems',        desc: 'Zero-defect design, FMEA, control plans, and audit cycles.',   link: '/services' },
+              { icon: <Network className="w-6 h-6" />,     title: 'Safety & Compliance',    desc: 'ISO integration, ESG alignment, and regulatory governance.',   link: '/services' },
+              { icon: <Target className="w-6 h-6" />,      title: 'Strategy Deployment',    desc: 'Hoshin Kanri X-matrix execution across all business levels.',  link: '/business-excellence' },
+              { icon: <Cpu className="w-6 h-6" />,         title: 'Technology & BPMN',      desc: 'Process modelling, digital dashboards, workflow automation.',  link: '/business-excellence' },
+            ].map((area, i) => (
+              <motion.div
+                key={area.title}
+                initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                transition={{ delay: i * 0.07, duration: 0.5 }}
+              >
+                <Link
+                  to={area.link}
+                  className="flex flex-col h-full bg-white border border-slate-100 rounded-2xl p-6 hover:border-brand-blue/30 hover:shadow-lg transition-all group"
+                >
+                  <div className="w-11 h-11 rounded-xl bg-brand-blue/10 flex items-center justify-center text-brand-blue mb-4 group-hover:bg-brand-navy group-hover:text-white transition-colors shrink-0">
+                    {area.icon}
+                  </div>
+                  <h3 className="font-bold text-brand-navy mb-2 text-base">{area.title}</h3>
+                  <p className="text-slate-500 text-sm leading-relaxed flex-1">{area.desc}</p>
+                  <span className="mt-4 text-brand-blue text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all">
+                    Learn more <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Engagement Tiers ─────────────────────────────────────────────── */}
+      <section className="py-24 bg-brand-navy overflow-hidden relative">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-blue/40 to-transparent" />
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <motion.p
+              initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              className="text-brand-accent font-bold uppercase tracking-widest text-sm mb-3"
+            >
+              How We Engage
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl font-display text-white"
+            >
+              Choose Your Path to{' '}
+              <span className="italic text-brand-accent">Operational Excellence</span>
+            </motion.h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 items-start">
+            {[
+              {
+                tier: 'Tier 1', name: 'Diagnostic', duration: '2–4 Weeks', featured: false,
+                bullets: ['Current-state assessment', 'BPMN As-Is process mapping', 'Opportunity register', 'Financial quantification of losses'],
+              },
+              {
+                tier: 'Tier 2', name: 'Improvement Project', duration: '3–6 Months', featured: true,
+                bullets: ['DMAIC & Kaizen project execution', 'Future-state BPMN design', 'Control plans & sustainment', 'Team capability building'],
+              },
+              {
+                tier: 'Tier 3', name: '360° Transformation', duration: '12–24 Months', featured: false,
+                bullets: ['Full system deployment across all pillars', 'Internal belt certification training', 'Hoshin Kanri strategy cascade', 'Monthly leadership review cadence'],
+              },
+            ].map((t, i) => (
+              <motion.div
+                key={t.tier}
+                initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                transition={{ delay: i * 0.12, duration: 0.6 }}
+                className={`relative rounded-3xl p-8 border flex flex-col ${
+                  t.featured
+                    ? 'bg-brand-blue border-brand-blue shadow-2xl shadow-brand-blue/40 md:-mt-4 md:-mb-4'
+                    : 'bg-white/5 border-white/10 hover:bg-white/10 transition-all'
+                }`}
+              >
+                {t.featured && (
+                  <span className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-brand-gold text-brand-navy text-xs font-bold uppercase tracking-wider shadow-lg whitespace-nowrap">
+                    Most Popular
+                  </span>
+                )}
+                <div className="mb-6">
+                  <p className={`text-xs font-bold uppercase tracking-widest mb-1 ${t.featured ? 'text-white/70' : 'text-brand-accent'}`}>{t.tier}</p>
+                  <h3 className="text-2xl font-bold text-white">{t.name}</h3>
+                  <p className={`text-sm mt-1 ${t.featured ? 'text-white/80' : 'text-slate-400'}`}>{t.duration}</p>
+                </div>
+                <ul className="space-y-3 flex-1 mb-8">
+                  {t.bullets.map(b => (
+                    <li key={b} className="flex items-start gap-3 text-sm">
+                      <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${t.featured ? 'text-white' : 'text-brand-accent'}`} />
+                      <span className={t.featured ? 'text-white/90' : 'text-slate-300'}>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => openModal(`BE Training — ${t.tier} Enquiry`)}
+                  className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 group ${
+                    t.featured
+                      ? 'bg-white text-brand-blue hover:bg-brand-accent hover:text-white'
+                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+                  }`}
+                >
+                  Enquire About {t.tier}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Implementation Roadmap ───────────────────────────────────────── */}
+      <section className="py-24 bg-white overflow-hidden">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <motion.p
+              initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              className="text-brand-blue font-bold uppercase tracking-widest text-sm mb-3"
+            >
+              Your Journey
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl font-display text-brand-navy"
+            >
+              From Assessment to{' '}
+              <span className="italic text-brand-blue">Sustained Excellence</span>
+            </motion.h2>
+          </div>
+
+          <div className="relative">
+            {/* Animated progress line (desktop) */}
+            <div className="hidden md:block absolute top-8 left-0 right-0 h-0.5 bg-slate-100 z-0" />
+            <motion.div
+              initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
+              transition={{ duration: 1.4, ease: 'easeInOut' }}
+              className="hidden md:block absolute top-8 left-0 right-0 h-0.5 bg-gradient-to-r from-brand-blue to-brand-accent origin-left z-0"
+            />
+
+            <div className="grid md:grid-cols-5 gap-6 relative z-10">
+              {[
+                { phase: 'Phase 0', label: 'Initiation',    timing: 'Weeks 1–2',   desc: 'Stakeholder alignment, scope definition, baseline data collection.' },
+                { phase: 'Phase 1', label: 'Foundation',    timing: '1–3 Months',  desc: 'Process mapping, waste identification, quick-win Kaizen events.' },
+                { phase: 'Phase 2', label: 'Deployment',    timing: '3–9 Months',  desc: 'DMAIC projects, future-state BPMN, Hoshin X-matrix rollout.' },
+                { phase: 'Phase 3', label: 'Embedding',     timing: '9–18 Months', desc: 'Belt certification, process registry, financial validation.' },
+                { phase: 'Phase 4', label: 'Sustainability', timing: '18+ Months', desc: 'Continuous pipeline, governance audits, replication across sites.' },
+              ].map((p, i) => (
+                <motion.div
+                  key={p.phase}
+                  initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                  transition={{ delay: i * 0.12, duration: 0.6 }}
+                  className="flex flex-col items-center text-center"
+                >
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-accent flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-brand-blue/30 mb-5 border-4 border-white">
+                    {i}
+                  </div>
+                  <p className="text-xs font-bold text-brand-blue uppercase tracking-widest mb-1">{p.phase}</p>
+                  <h3 className="font-bold text-brand-navy mb-1">{p.label}</h3>
+                  <p className="text-xs text-brand-accent font-semibold mb-3">{p.timing}</p>
+                  <p className="text-slate-500 text-xs leading-relaxed">{p.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Key Success Metrics ──────────────────────────────────────────── */}
+      <section className="py-24 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <motion.p
+              initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              className="text-brand-blue font-bold uppercase tracking-widest text-sm mb-3"
+            >
+              Measurable Outcomes
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl font-display text-brand-navy"
+            >
+              Key Success Metrics
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              transition={{ delay: 0.18 }}
+              className="text-slate-500 max-w-xl mx-auto mt-4 text-lg"
+            >
+              Every engagement is tracked against these KPIs to ensure transformation delivers real business impact.
+            </motion.p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { kpi: 'Lead Time Reduction', target: '30–50%', icon: <RefreshCw className="w-5 h-5" />, desc: 'End-to-end cycle time compressed through flow optimisation.' },
+              { kpi: 'First Pass Yield',    target: '>98%',   icon: <CheckCircle className="w-5 h-5" />, desc: 'Product or service right-first-time without rework.' },
+              { kpi: 'OEE',                 target: '>85%',   icon: <BarChart3 className="w-5 h-5" />,  desc: 'Overall Equipment Effectiveness across availability, performance, quality.' },
+              { kpi: 'COPQ Reduction',      target: '>20%',   icon: <DollarSign className="w-5 h-5" />, desc: 'Cost of poor quality eliminated through defect prevention.' },
+              { kpi: 'Sigma Level',          target: '≥4.5σ', icon: <Target className="w-5 h-5" />,    desc: 'Process capability demonstrating near-zero defect performance.' },
+              { kpi: 'Team Engagement',     target: '100%',   icon: <Users className="w-5 h-5" />,     desc: 'Every employee in at least one improvement cycle per year.' },
+              { kpi: 'BPMN Coverage',       target: '100%',   icon: <Layers className="w-5 h-5" />,    desc: 'All core processes documented and governed in BPMN 2.0.' },
+              { kpi: 'Safety Incidents',    target: 'Zero',   icon: <ShieldCheck className="w-5 h-5" />, desc: 'Lost-time incidents eliminated through embedded safety systems.' },
+            ].map((m, i) => (
+              <motion.div
+                key={m.kpi}
+                initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                transition={{ delay: i * 0.07, duration: 0.5 }}
+                className="bg-white border border-slate-100 rounded-2xl p-6 hover:border-brand-blue/20 hover:shadow-lg transition-all group"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-brand-blue/10 flex items-center justify-center text-brand-blue group-hover:bg-brand-navy group-hover:text-white transition-colors">
+                    {m.icon}
+                  </div>
+                  <span className="text-2xl font-bold text-brand-navy">{m.target}</span>
+                </div>
+                <h3 className="font-bold text-brand-navy text-sm mb-2">{m.kpi}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed">{m.desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 

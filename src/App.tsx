@@ -16,6 +16,7 @@ import FloatingChatWidget from './components/FloatingChatWidget';
 import BusinessExcellencePage from './pages/BusinessExcellencePage';
 import NCATrainingPage from './pages/NCATrainingPage';
 import BusinessExcellenceTrainingPage from './pages/BusinessExcellenceTrainingPage';
+import Testimonials from './components/Testimonials';
 import ServicesPage from './pages/ServicesPage';
 import BlogPage      from './pages/BlogPage';
 import ArticlePage   from './pages/ArticlePage';
@@ -500,7 +501,18 @@ const About: React.FC = () => (
 );
 
 // ─── Training section ─────────────────────────────────────────────────────────
-const trainingCourses = [
+interface TrainingCourse {
+  code: string;
+  title: string;
+  subtitle?: string;
+  desc: string;
+  duration: string;
+  level: string;
+  badge?: string;
+  link?: string;
+}
+
+const trainingCourses: TrainingCourse[] = [
   {
     code: 'WAH',
     title: 'Working at Heights',
@@ -521,6 +533,16 @@ const trainingCourses = [
     desc: 'Train your internal team to lead Kaizen events — from problem identification to solution deployment and sustainment.',
     duration: '3 Days',
     level: 'Management',
+  },
+  {
+    code: 'OET',
+    title: 'Operational Excellence Transformation',
+    subtitle: 'From Training to Full Business Impact',
+    desc: 'Learn how to implement Lean systems, BPMN governance, and financial performance frameworks that deliver measurable business results.',
+    duration: 'Multi-Phase',
+    level: 'Leadership',
+    badge: 'Advanced Program',
+    link: '/training/business-excellence',
   },
 ];
 
@@ -563,11 +585,23 @@ const Training: React.FC = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1, duration: 0.6 }}
-            className="bg-white/5 border border-white/10 rounded-2xl p-7 hover:bg-white/10 hover:border-brand-blue/30 transition-all group"
+            className={`relative rounded-2xl p-7 transition-all group flex flex-col ${
+              course.badge
+                ? 'bg-white/10 border border-brand-gold/40 hover:border-brand-gold/70'
+                : 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-brand-blue/30'
+            }`}
           >
+            {course.badge && (
+              <span className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-brand-gold/20 border border-brand-gold/40 text-brand-gold text-[10px] font-bold uppercase tracking-wider">
+                {course.badge}
+              </span>
+            )}
             <div className="text-brand-accent font-bold text-xs uppercase tracking-widest mb-4">{course.code}</div>
-            <h3 className="text-lg font-bold text-white mb-3 leading-tight">{course.title}</h3>
-            <p className="text-slate-400 text-sm leading-relaxed mb-6">{course.desc}</p>
+            <h3 className="text-lg font-bold text-white mb-1 leading-tight">{course.title}</h3>
+            {course.subtitle && (
+              <p className="text-brand-accent/70 text-xs font-semibold mb-3">{course.subtitle}</p>
+            )}
+            <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-1">{course.desc}</p>
             <div className="border-t border-white/10 pt-4 space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="text-slate-500">Duration</span>
@@ -578,6 +612,15 @@ const Training: React.FC = () => (
                 <span className="text-brand-accent font-semibold">{course.level}</span>
               </div>
             </div>
+            {course.link && (
+              <Link
+                to={course.link}
+                className="mt-5 flex items-center gap-1.5 text-sm font-bold text-brand-gold hover:text-white transition-colors hover:gap-2.5"
+              >
+                Explore Program
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
           </motion.div>
         ))}
       </div>
@@ -791,6 +834,7 @@ export default function App() {
               <About />
               <Training />
               <SystemSection />
+              <Testimonials />
               <CTASection />
             </>
           } />

@@ -85,6 +85,12 @@
 }
 .animate-border-pulse { animation: border-pulse 3s ease-in-out infinite; }
 
+/* ─── Testimonial carousel scroll ──────────────────────── */
+@keyframes testimonialScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* ─── Smooth scroll globally ────────────────────────────── */
 * { scroll-behavior: smooth; }
 
