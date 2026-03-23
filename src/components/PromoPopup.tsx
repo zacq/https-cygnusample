@@ -146,7 +146,7 @@ const PromoPopup: React.FC<PromoPopupProps> = ({ heroId = 'page-hero' }) => {
                           Enterprise transformation framework — Lean, Kaizen, Hoshin Kanri, BPMN and financial governance in one integrated system.
                         </p>
                         <a
-                          href="/360-degree-opex-hydro-aluminium.pdf"
+                          href="/BCIE-2026-Full-Course-Calendar.pdf"
                           download
                           className="mt-auto w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold py-2 rounded-lg transition-all flex items-center justify-center gap-2"
                         >
