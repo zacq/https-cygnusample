@@ -1,12 +1,14 @@
 # Product Requirements Document
 ## Cygnus Consulting Website — Current State
-**Version:** 1.0 | **Date:** 2026-03-21 | **Status:** Live / Active Development
+**Version:** 1.4 | **Date:** 2026-03-23 | **Status:** Live / Active Development
 
 ---
 
 ## Changelog
 | Version | Date | Summary |
 |---|---|---|
+| 1.4 | 2026-03-23 | PromoPopup widget (2-col, collapsible, IntersectionObserver); payment details in LeadCaptureModal; Testimonials rewritten to 4 real clients; BE page download CTA; ?register=1 PDF deep-link; WAH & NCA fix; all downloads → 2026 BCIE Calendar.pdf |
+| 1.3 | 2026-03-23 | Shared NCA sessions extracted to src/data/ncaSessions.ts; all download links updated to 2026 BCIE Calendar.pdf |
 | 1.2 | 2026-03-21 | Addendum implemented: OET 4th training tile, Testimonials carousel, BE Training page 4 new sections (360° OE System, Engagement Tiers, Implementation Roadmap, Key Success Metrics) |
 | 1.1 | 2026-03-21 | Added Section 15: full web copy structure for all home page sections |
 | 1.0 | 2026-03-21 | Initial PRD — full snapshot of current website state |
@@ -177,13 +179,14 @@ A marketing and lead-generation website for Cygnus Consulting, a Lean Management
 **Unified lead form — replaced the old `BookingModal`.**
 
 **Form Fields:**
-| Field | Required | Type |
-|---|---|---|
-| Full Name | Yes | text |
-| Phone | Yes | tel |
-| Email | Yes | email |
-| Company | No | text |
-| Message | No | textarea |
+| Field | Required | Type | Notes |
+|---|---|---|---|
+| Full Name | Yes | text | |
+| Phone | Yes | tel | |
+| Email | Yes | email | |
+| Company | No | text | |
+| Payment Details | — | UI only | Red info box (never submitted to Airtable). Paybill: 453521 · Account No: Company Name. Always visible above "How can we help?" |
+| Message ("How can we help?") | No | textarea | |
 
 **Optional prop:** `courseDetail` — if set, displays selected course info in the modal header.
 
@@ -315,11 +318,71 @@ All variables prefixed `VITE_` for Vite client-side exposure. `.env` is gitignor
 
 ---
 
+## 11b. Testimonials (`src/components/Testimonials.tsx`)
+
+Infinite-scroll carousel. **4 verified client entries only** — data shape uses `attribution` (single string) instead of separate `name` / `role` / `company` fields.
+
+| Attribution | Quote excerpt |
+|---|---|
+| Ex Press Garage — OPEX | "Cygnus transformed our shop floor in 90 days. Lead times dropped by 38%…" |
+| El Funi Furniture — OPEX | "The Kaizen facilitation training was immediately practical…" |
+| Lead Communication — WAH | "OEE went from 67% to 89% within six months…" |
+| Next Gen — WAH | "First-pass yield is now above 98%…" |
+
+---
+
+## 11c. PromoPopup (`src/components/PromoPopup.tsx`)
+
+Semi-translucent floating widget — fixed bottom-right, `z-[90]`.
+
+**Trigger:** `IntersectionObserver` on `id="page-hero"` element — appears when hero scrolls out of viewport, hides when hero is back in view.
+
+**Active pages:** Home (`/`), Business Excellence (`/business-excellence`), Services (`/services`), Blog (`/blog`)
+
+**Controls:** Collapse/expand chevron + dismiss (×) button.
+
+**Layout — two columns:**
+
+| Column | Content |
+|---|---|
+| LHS — Next NCA Session | Dynamically shows first upcoming session from `src/data/ncaSessions.ts` (date ≥ today). Shows topic, date, time, CPD points, price. "Register Now" button opens LeadCaptureModal pre-filled with session details. |
+| RHS — Continuous Capacity Building | Static heading + descriptor + "Download Program" button (`download` → `/2026 BCIE Calendar.pdf`) |
+
+**Responsive:** Two columns on `sm+`; stacks vertically on mobile.
+
+---
+
+## 11d. Shared NCA Sessions Data (`src/data/ncaSessions.ts`)
+
+Exports `NCA_SESSIONS` array and `getNextSession()` helper. Both `NCATrainingPage` and `PromoPopup` import from this single source of truth.
+
+---
+
+## 11e. PDF Deep-Link (?register=1)
+
+`BusinessExcellenceTrainingPage` detects `?register=1` URL parameter on mount via `useSearchParams` and auto-opens the "Register for the Program" LeadCaptureModal.
+
+**Use case:** Embed `https://cygnusimproved.netlify.app/training/business-excellence?register=1` as a clickable link inside the downloadable PDF to redirect offline readers directly to the registration form.
+
+---
+
+## 11f. Downloadable Resource
+
+All download buttons across the site serve: **`/2026 BCIE Calendar.pdf`** (stored in `public/`).
+
+| Location | Button label |
+|---|---|
+| BE page hero | Explore our Training Program |
+| BE Training page | Download Program Outline |
+| PromoPopup RHS | Download Program |
+
+---
+
 ## 12. Pages Beyond Home
 
 ### 12.1 Business Excellence (`/business-excellence`)
 - Dedicated page for the BE consulting program
-- Includes downloadable PDF outline (wired in last commit)
+- **Hero CTAs:** "Discuss Your Operational Challenge" (opens chat) + "Explore Our Framework" (anchor) + "Explore our Training Program" (`download` → `2026 BCIE Calendar.pdf`)
 
 ### 12.2 Training (`/training`)
 - Full training programs overview
@@ -449,7 +512,7 @@ Complete verbatim copy for every visible section of the home page, in render ord
 | ✗ Item 6 | No clear metrics; decisions made on gut instinct |
 | **With Cygnus column heading** | With Cygnus |
 | ✓ Item 1 | Streamlined Lean systems delivering measurable ROI |
-| ✓ Item 2 | Certified safety compliance — WAH & GWO standards |
+| ✓ Item 2 | Certified safety compliance — WAH & NCA standards |
 | ✓ Item 3 | A culture of Kaizen: every employee drives improvement |
 | ✓ Item 4 | Proactive management frameworks that prevent breakdowns |
 | ✓ Item 5 | Unified teams aligned around shared operational goals |
@@ -645,5 +708,7 @@ Complete verbatim copy for every visible section of the home page, in render ord
 
 | Version | Date | Changed by | Summary of Changes |
 |---|---|---|---|
+| 1.4 | 2026-03-23 | — | PromoPopup (§11c), payment details in modal (§6.1), Testimonials rewrite (§11b), BE hero download CTA (§12.1), ?register=1 deep-link (§11e), WAH & NCA fix (§15.5), BCIE Calendar PDF (§11f), shared sessions data (§11d) |
+| 1.3 | 2026-03-23 | — | Shared NCA sessions data extracted; all download links updated to 2026 BCIE Calendar.pdf |
 | 1.1 | 2026-03-21 | — | Added Section 15: complete web copy structure for all home page sections and modals |
 | 1.0 | 2026-03-21 | — | Initial PRD snapshot. All modals unified under LeadCaptureModal. BE PDF download wired. Blog routes added. |
