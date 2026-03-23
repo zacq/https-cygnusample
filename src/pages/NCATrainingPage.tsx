@@ -5,26 +5,7 @@ import {
   CalendarDays, Clock4, ChevronDown,
 } from 'lucide-react';
 import LeadCaptureModal from '../components/LeadCaptureModal';
-
-// ─── Data ─────────────────────────────────────────────────────────────────────
-interface Session {
-  id:    number;
-  date:  string;
-  time:  string;
-  topic: string;
-  cpd:   number;
-}
-
-const SESSIONS: Session[] = [
-  { id: 1, date: '11 March 2026',  time: '9:00 AM – 4:00 PM', topic: 'Operational Excellence for Sustainable Constructions',    cpd: 5 },
-  { id: 2, date: '25 March 2026',  time: '9:00 AM – 4:00 PM', topic: 'Safety as a Value in the Construction Industry',          cpd: 5 },
-  { id: 3, date: '8 April 2026',   time: '9:00 AM – 4:00 PM', topic: 'Managing Construction Site Safety Using Risk Assessment',  cpd: 5 },
-  { id: 4, date: '29 April 2026',  time: '9:00 AM – 4:00 PM', topic: 'Operational Excellence for Sustainable Constructions',    cpd: 5 },
-  { id: 5, date: '13 May 2026',    time: '9:00 AM – 4:00 PM', topic: 'Safety as a Value in the Construction Industry',          cpd: 5 },
-  { id: 6, date: '29 May 2026',    time: '9:00 AM – 4:00 PM', topic: 'Managing Construction Site Safety Using Risk Assessment',  cpd: 5 },
-  { id: 7, date: '17 June 2026',   time: '9:00 AM – 4:00 PM', topic: 'Operational Excellence for Sustainable Constructions',    cpd: 5 },
-  { id: 8, date: '30 June 2026',   time: '9:00 AM – 4:00 PM', topic: 'Safety as a Value in the Construction Industry',          cpd: 5 },
-];
+import { NCA_SESSIONS as SESSIONS, NCASession as Session } from '../data/ncaSessions';
 
 const PaymentInstructions = () => (
   <div className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-5 text-left space-y-2 mt-2">

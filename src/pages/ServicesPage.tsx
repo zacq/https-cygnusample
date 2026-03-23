@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import LeadCaptureModal from '../components/LeadCaptureModal';
+import PromoPopup from '../components/PromoPopup';
 
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -89,7 +90,7 @@ const ServicesPage: React.FC = () => {
   return (
     <main>
       {/* ── Authority Hero ────────────────────────────────────────────────── */}
-      <section className="relative pt-32 pb-24 bg-brand-navy overflow-hidden">
+      <section id="page-hero" className="relative pt-32 pb-24 bg-brand-navy overflow-hidden">
         <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-brand-blue/10 blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-brand-navy to-transparent pointer-events-none" />
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -498,6 +499,7 @@ const ServicesPage: React.FC = () => {
         heading="Request a Free Consultation"
         subheading="No commitment — just clarity on how we can help."
       />
+      <PromoPopup />
     </main>
   );
 };

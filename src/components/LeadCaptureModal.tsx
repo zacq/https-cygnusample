@@ -64,8 +64,6 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
     setStatus('loading');
     setErrorMsg('');
 
-    const today = new Date().toISOString().split('T')[0];
-
     const fields: Record<string, string> = {
       Name:    formData.fullName.trim(),
       Phone:   formData.phone.trim(),
@@ -74,11 +72,7 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
       Message: formData.message.trim(),
       Source:  source,
       Status:  'New',
-      Date:    today,
     };
-    if (courseDetail) {
-      fields['Course'] = courseDetail;
-    }
 
     try {
       const res = await fetch(
@@ -123,7 +117,7 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 24 }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             {/* Top gradient accent bar */}
@@ -249,6 +243,13 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
                         onChange={handleChange}
                         className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
                       />
+                    </div>
+
+                    {/* Payment info — informational only, never submitted */}
+                    <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 space-y-1">
+                      <p className="text-xs font-bold text-red-600 uppercase tracking-wider mb-1">Payment Details</p>
+                      <p className="text-sm font-semibold text-red-600">Paybill: <span className="font-bold">453521</span></p>
+                      <p className="text-sm font-semibold text-red-600">Account No: <span className="font-bold">Company Name</span></p>
                     </div>
 
                     {/* Message */}

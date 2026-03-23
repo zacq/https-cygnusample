@@ -17,6 +17,7 @@ import BusinessExcellencePage from './pages/BusinessExcellencePage';
 import NCATrainingPage from './pages/NCATrainingPage';
 import BusinessExcellenceTrainingPage from './pages/BusinessExcellenceTrainingPage';
 import Testimonials from './components/Testimonials';
+import PromoPopup   from './components/PromoPopup';
 import ServicesPage from './pages/ServicesPage';
 import BlogPage      from './pages/BlogPage';
 import ArticlePage   from './pages/ArticlePage';
@@ -836,6 +837,7 @@ export default function App() {
               <SystemSection />
               <Testimonials />
               <CTASection />
+              <PromoPopup />
             </>
           } />
           <Route path="/business-excellence" element={<BusinessExcellencePage />} />

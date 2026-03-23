@@ -13,7 +13,7 @@ const oldWay = [
 
 const newWay = [
   'Streamlined Lean systems delivering measurable ROI',
-  'Certified safety compliance — WAH & GWO standards',
+  'Certified safety compliance — WAH & NCA standards',
   'A culture of Kaizen: every employee drives improvement',
   'Proactive management frameworks that prevent breakdowns',
   'Unified teams aligned around shared operational goals',

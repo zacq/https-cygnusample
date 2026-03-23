@@ -2,59 +2,30 @@ import React, { useRef, useState } from 'react';
 import { motion } from 'motion/react';
 
 interface Testimonial {
-  name: string;
-  role: string;
+  attribution: string;
   quote: string;
   rating: number;
 }
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    name: 'James Mwangi',
-    role: 'Operations Director, Nairobi Manufacturing Ltd',
+    attribution: 'Ex Press Garage — OPEX',
     quote: 'Cygnus transformed our shop floor in 90 days. Lead times dropped by 38% and our team actually owns the process now.',
     rating: 5,
   },
   {
-    name: 'Amina Odhiambo',
-    role: 'CEO, East Africa Logistics Group',
+    attribution: 'El Funi Furniture — OPEX',
     quote: 'The Kaizen facilitation training was immediately practical. Our managers ran their first improvement event the following week.',
     rating: 5,
   },
   {
-    name: 'Peter Kariuki',
-    role: 'Plant Manager, Rift Valley Foods',
+    attribution: 'Lead Communication — WAH',
     quote: 'OEE went from 67% to 89% within six months. The Cygnus team embedded with us and locked in every single gain.',
     rating: 5,
   },
   {
-    name: 'Grace Wanjiku',
-    role: 'Head of Quality, Mombasa Packaging Co.',
+    attribution: 'Next Gen — WAH',
     quote: 'First-pass yield is now above 98%. We used to accept rework as normal — that mindset has completely changed.',
-    rating: 5,
-  },
-  {
-    name: 'Samuel Otieno',
-    role: 'Finance Manager, Kisumu Industrial Supplies',
-    quote: 'The financial impact frameworks helped us quantify waste for the first time. We found KES 14M in recoverable losses in the first assessment.',
-    rating: 5,
-  },
-  {
-    name: 'Fatuma Hassan',
-    role: 'HSE Manager, Coastal Construction Ltd',
-    quote: 'The Working at Heights certification is the most thorough we have encountered in Kenya. Zero incidents since certification.',
-    rating: 5,
-  },
-  {
-    name: 'David Njoroge',
-    role: 'MD, Thika Agro-Processing',
-    quote: 'Strategy deployment finally sticks. Hoshin Kanri gave us a planning cadence we did not know we were missing.',
-    rating: 5,
-  },
-  {
-    name: 'Esther Chebet',
-    role: 'Continuous Improvement Lead, Eldoret Textiles',
-    quote: 'Three months in and our COPQ has dropped by 24%. The roadmap Cygnus built with us is something we genuinely use every week.',
     rating: 5,
   },
 ];
@@ -130,8 +101,7 @@ const Testimonials: React.FC = () => {
               <Stars n={t.rating} />
               <p className="text-slate-700 leading-relaxed mb-6 text-sm">"{t.quote}"</p>
               <div className="border-t border-slate-100 pt-4">
-                <p className="font-bold text-brand-navy text-sm">{t.name}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{t.role}</p>
+                <p className="font-bold text-brand-navy text-sm">{t.attribution}</p>
               </div>
             </div>
           ))}

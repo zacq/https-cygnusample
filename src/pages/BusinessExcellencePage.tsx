@@ -1,12 +1,13 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Target, Zap, BarChart3, Leaf, Search, PenLine, TrendingUp } from 'lucide-react';
+import PromoPopup from '../components/PromoPopup';
 
 const openChat = () => window.dispatchEvent(new CustomEvent('open-chat-widget'));
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 const Hero: React.FC = () => (
-  <section className="relative min-h-[90vh] flex items-center pt-20 bg-brand-navy overflow-hidden">
+  <section id="page-hero" className="relative min-h-[90vh] flex items-center pt-20 bg-brand-navy overflow-hidden">
     <div className="absolute top-1/4 right-1/3 w-[500px] h-[500px] rounded-full bg-brand-blue/10 blur-[120px] pointer-events-none" />
     <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-brand-navy to-transparent pointer-events-none" />
 
@@ -55,6 +56,15 @@ const Hero: React.FC = () => (
             className="bg-white/10 hover:bg-white/[0.18] backdrop-blur-sm text-white px-8 py-4 rounded-xl font-bold text-lg transition-all border border-white/20"
           >
             Explore Our Framework
+          </motion.a>
+          <motion.a
+            href="/360-degree-opex-hydro-aluminium.pdf"
+            download
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="bg-white/10 hover:bg-white/[0.18] backdrop-blur-sm text-white px-8 py-4 rounded-xl font-bold text-lg transition-all border border-white/20 flex items-center gap-2"
+          >
+            Explore our Training Program
           </motion.a>
         </div>
       </motion.div>
@@ -548,6 +558,7 @@ const BusinessExcellencePage: React.FC = () => (
     <ServicesSection />
     <OutcomesSection />
     <ConversationCTA />
+    <PromoPopup />
   </main>
 );
 

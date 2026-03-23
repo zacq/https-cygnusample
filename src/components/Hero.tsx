@@ -89,7 +89,7 @@ const Hero: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-brand-navy">
+    <section id="page-hero" className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-brand-navy">
       {/* Canvas network */}
       <canvas
         ref={canvasRef}

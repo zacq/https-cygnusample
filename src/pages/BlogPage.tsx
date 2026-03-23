@@ -6,6 +6,7 @@ import {
   ChevronRight, ChevronLeft, ShieldCheck, FileText, Clock, Calendar, BarChart2,
 } from 'lucide-react';
 import LeadCaptureModal from '../components/LeadCaptureModal';
+import PromoPopup from '../components/PromoPopup';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Article {
@@ -253,7 +254,7 @@ const BlogPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* ── Hero ──────────────────────────────────────────────────────────────── */}
-      <section className="bg-brand-navy pt-36 pb-20 relative overflow-hidden">
+      <section id="page-hero" className="bg-brand-navy pt-36 pb-20 relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)', backgroundSize: '40px 40px' }}
@@ -711,6 +712,7 @@ const BlogPage: React.FC = () => {
         heading="Connect with Our Experts"
         subheading="Tell us about your challenge — we'll respond within 24 hours."
       />
+      <PromoPopup />
     </div>
   );
 };
