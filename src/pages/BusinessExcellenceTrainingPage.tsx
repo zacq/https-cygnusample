@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   CheckCircle,
@@ -81,6 +81,14 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
   const [modal, setModal] = useState<{ open: boolean; source: string }>({ open: false, source: '' });
   const finalRef = useRef<HTMLDivElement>(null);
   const openModal = (source: string) => setModal({ open: true, source });
+  const [searchParams] = useSearchParams();
+
+  // Auto-open modal when arriving via ?register=1 (e.g. from PDF link)
+  useEffect(() => {
+    if (searchParams.get('register') === '1') {
+      setModal({ open: true, source: 'PDF Link — Register' });
+    }
+  }, [searchParams]);
 
   const scrollToFinal = () =>
     finalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
