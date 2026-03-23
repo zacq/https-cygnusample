@@ -58,7 +58,7 @@ const Hero: React.FC = () => (
             Explore Our Framework
           </motion.a>
           <motion.a
-            href="/BCIE-2026-Full-Course-Calendar.pdf"
+            href="/2026 BCIE Calendar.pdf"
             download
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
