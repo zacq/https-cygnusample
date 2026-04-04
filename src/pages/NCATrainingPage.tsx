@@ -20,7 +20,7 @@ const PaymentInstructions = () => (
     </div>
     <div className="flex justify-between text-sm">
       <span className="text-slate-500">Amount</span>
-      <span className="font-bold text-slate-800">KES 4,000</span>
+      <span className="font-bold text-slate-800">KES 5,000</span>
     </div>
   </div>
 );
@@ -106,9 +106,9 @@ const NCATrainingPage: React.FC = () => {
             className="flex flex-wrap justify-center gap-8 mt-14 border-t border-white/10 pt-10"
           >
             {[
-              { value: '5 CPD', label: 'Points per session' },
-              { value: '2 Sessions', label: 'To reach 10 CPD' },
-              { value: 'KES 4,000', label: 'Per training' },
+              { value: '20 CPD', label: 'Points per 2-day session' },
+              { value: '2 Days', label: 'Per session' },
+              { value: 'KES 5,000', label: 'Per 2-day session' },
               { value: '100% Online', label: 'Full-day webinar' },
             ].map((stat, i) => (
               <React.Fragment key={stat.label}>
@@ -137,13 +137,11 @@ const NCATrainingPage: React.FC = () => {
               Changes in Training Model
             </h2>
             <p className="text-lg text-slate-600 leading-relaxed max-w-3xl">
-              The NCA training model has been revised, and changes have been effected going forward.
-              During this training period, we will adopt one of the models suggested by NCA:{' '}
-              <strong className="text-brand-navy">a full-day webinar</strong>. This is a purely online,
-              full-day session that earns you{' '}
-              <strong className="text-brand-navy">5 CPD points</strong>. Hence, you will need to
-              attend <strong className="text-brand-navy">two sessions</strong> in order to obtain the{' '}
-              <strong className="text-brand-navy">10 CPD points</strong> required for license renewal.
+              The NCA training model has been revised and changes are now in effect. Each training is a{' '}
+              <strong className="text-brand-navy">2-day online webinar</strong> running both days from{' '}
+              9:00 AM to 4:00 PM. Completing a 2-day session earns you{' '}
+              <strong className="text-brand-navy">20 CPD points</strong> towards your NCA licence renewal,
+              at a fee of <strong className="text-brand-navy">KES 5,000 per 2-day session</strong>.
             </p>
             <button
               onClick={scrollToCalendar}
@@ -172,7 +170,7 @@ const NCATrainingPage: React.FC = () => {
             <h3 className="text-lg font-bold text-brand-navy mb-4">What You Will Gain</h3>
             <ul className="space-y-3 text-sm text-slate-600">
               {[
-                '5 CPD points per training',
+                '20 CPD points per 2-day training',
                 'Enhanced contracting skills',
                 'Certificate of attendance',
               ].map(item => (
@@ -202,10 +200,10 @@ const NCATrainingPage: React.FC = () => {
             <h3 className="text-lg font-bold text-brand-navy mb-4">Training Details</h3>
             <ul className="space-y-3 text-sm">
               {[
-                { label: 'Format',   value: 'Full-day webinar' },
+                { label: 'Format',   value: '2-day webinar' },
                 { label: 'Mode',     value: 'Online' },
-                { label: 'Duration', value: '9:00 AM – 4:00 PM' },
-                { label: 'Fee',      value: 'KES 4,000 per session' },
+                { label: 'Duration', value: '9:00 AM – 4:00 PM (both days)' },
+                { label: 'Fee',      value: 'KES 5,000 per session' },
               ].map(({ label, value }) => (
                 <li key={label} className="flex justify-between">
                   <span className="text-slate-500">{label}</span>
@@ -231,7 +229,7 @@ const NCATrainingPage: React.FC = () => {
               {[
                 { label: 'Paybill',     value: '453521' },
                 { label: 'Account No.', value: 'Company Name' },
-                { label: 'Amount',      value: 'KES 4,000' },
+                { label: 'Amount',      value: 'KES 5,000' },
               ].map(({ label, value }) => (
                 <li key={label} className="flex justify-between">
                   <span className="text-slate-500">{label}</span>
@@ -300,7 +298,11 @@ const NCATrainingPage: React.FC = () => {
                   >
                     <td className="px-6 py-4 font-semibold text-slate-800 whitespace-nowrap">{session.date}</td>
                     <td className="px-6 py-4 text-slate-600 whitespace-nowrap">{session.time}</td>
-                    <td className="px-6 py-4 text-slate-700">{session.topic}</td>
+                    <td className="px-6 py-4 text-slate-700">
+                      <p className="font-semibold text-slate-800">{session.topic}</p>
+                      <p className="text-xs text-slate-500 mt-1">Day 1 ({session.day1.date}): {session.day1.topic}</p>
+                      <p className="text-xs text-slate-500">Day 2 ({session.day2.date}): {session.day2.topic}</p>
+                    </td>
                     <td className="px-6 py-4 text-center">
                       <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-brand-blue/10 text-brand-blue font-bold text-sm">
                         {session.cpd}
@@ -340,7 +342,9 @@ const NCATrainingPage: React.FC = () => {
                     {session.cpd}
                   </span>
                 </div>
-                <p className="text-sm text-slate-700 mb-4">{session.topic}</p>
+                <p className="text-sm font-semibold text-slate-700 mb-1">{session.topic}</p>
+                <p className="text-xs text-slate-500">Day 1 ({session.day1.date}): {session.day1.topic}</p>
+                <p className="text-xs text-slate-500 mb-4">Day 2 ({session.day2.date}): {session.day2.topic}</p>
                 <button
                   onClick={() => openSession(session)}
                   className="w-full bg-[#79B56E] hover:bg-[#5a9a4f] text-white py-2.5 rounded-xl font-bold text-sm transition-all"
@@ -358,7 +362,7 @@ const NCATrainingPage: React.FC = () => {
             viewport={{ once: true }}
             className="text-center text-sm text-slate-400 mt-8"
           >
-            Need to attend <strong className="text-slate-600">2 sessions</strong> for 10 CPD points required for license renewal.
+            Each 2-day session earns <strong className="text-slate-600">20 CPD points</strong> towards NCA licence renewal.
           </motion.p>
         </div>
       </section>
@@ -369,7 +373,7 @@ const NCATrainingPage: React.FC = () => {
         source={selectedSession ? `NCA Training — ${selectedSession.topic}` : 'NCA Training'}
         courseDetail={selectedSession?.topic}
         heading="Register for Session"
-        subheading={selectedSession ? `${selectedSession.date} · ${selectedSession.time} · 5 CPD points` : undefined}
+        subheading={selectedSession ? `${selectedSession.date} · ${selectedSession.time} · ${selectedSession.cpd} CPD points` : undefined}
         postSuccess={<PaymentInstructions />}
       />
     </main>

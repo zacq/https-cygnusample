@@ -116,7 +116,7 @@ const PromoPopup: React.FC<PromoPopupProps> = ({ heroId = 'page-hero' }) => {
                               </div>
                               <div className="flex items-center gap-2 text-xs text-slate-300">
                                 <Award className="w-3.5 h-3.5 text-brand-accent shrink-0" />
-                                {nextSession.cpd} CPD Points · KES 4,000
+                                {nextSession.cpd} CPD Points · KES 5,000
                               </div>
                             </div>
                             <button

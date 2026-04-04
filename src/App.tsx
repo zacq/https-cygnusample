@@ -21,6 +21,7 @@ import PromoPopup   from './components/PromoPopup';
 import ServicesPage from './pages/ServicesPage';
 import BlogPage      from './pages/BlogPage';
 import ArticlePage   from './pages/ArticlePage';
+import MeetUsPage    from './pages/MeetUsPage';
 
 // ─── Global CTA trigger → source mapping ─────────────────────────────────────
 const CTA_SOURCE_MAP: Record<string, string> = {
@@ -496,6 +497,13 @@ const About: React.FC = () => (
           Learn More About Cygnus
           <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </button>
+
+        <p className="mt-6 text-sm text-slate-500">
+          Behind every system we build is a philosophy of reclaiming operational potential.{' '}
+          <Link to="/meet-us" className="text-brand-blue hover:text-brand-accent font-semibold transition-colors">
+            Meet the mind behind Cygnus →
+          </Link>
+        </p>
       </motion.div>
     </div>
   </section>
@@ -693,6 +701,12 @@ const CTASection: React.FC = () => (
               Contact Us
             </motion.a>
           </div>
+          <p className="mt-8 text-white/50 text-sm">
+            Prefer a conversation first?{' '}
+            <Link to="/meet-us" className="text-brand-accent hover:text-white transition-colors font-semibold">
+              Meet us before we work together →
+            </Link>
+          </p>
         </div>
       </motion.div>
     </div>
@@ -745,6 +759,9 @@ const Footer: React.FC = () => (
           {['About Cygnus', 'Our Process', 'Case Studies', 'Blog & Insights', 'Careers'].map(s => (
             <li key={s}><a href="#" className="hover:text-brand-blue transition-colors">{s}</a></li>
           ))}
+          <li>
+            <Link to="/meet-us" className="hover:text-brand-blue transition-colors">Meet Us</Link>
+          </li>
         </ul>
       </div>
 
@@ -775,7 +792,19 @@ const Footer: React.FC = () => (
     </div>
 
     <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-xs">
-      <p>© {new Date().getFullYear()} Cygnus Consulting. All Rights Reserved.</p>
+      <p>
+        © {new Date().getFullYear()} Cygnus Consulting. All Rights Reserved.
+        {' '}·{' '}
+        Built & maintained by{' '}
+        <a
+          href="https://neuraflow.cloud/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-brand-accent hover:text-white transition-colors"
+        >
+          Neuraflow
+        </a>
+      </p>
       <div className="flex gap-6">
         <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
         <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
@@ -846,6 +875,7 @@ export default function App() {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/blog"     element={<BlogPage />} />
           <Route path="/blog/:slug" element={<ArticlePage />} />
+          <Route path="/meet-us"   element={<MeetUsPage />} />
         </Routes>
         <Footer />
       </div>
