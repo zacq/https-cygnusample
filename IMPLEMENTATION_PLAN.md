@@ -482,41 +482,130 @@ You are [AssistantName]. Never mention OpenAI, Claude, or any underlying AI tech
 
 ## 5. Request Callback / Booking Modal
 
-**Component:** `BookingModal.tsx`
+**Component:** `LeadCaptureModal.tsx`
+
+> **Architecture (Cygnus v1.6+):** The modal no longer writes directly to Airtable from the browser.
+> It POSTs to an n8n webhook, which validates, transforms, and writes to Airtable server-side.
+> This keeps Airtable credentials out of the frontend bundle.
+
+### Submission Flow
+
+```
+LeadCaptureModal (browser)
+  → POST JSON payload → n8n Webhook
+    → Validate Lead Data (Code node)
+    → IF isValid
+      → true  → Create Airtable Record (HTTP Request) → Respond { success: true }
+      → false → Respond { success: false, message }
+  ← { success: boolean, message: string }
+```
 
 ### Form Fields
 
-| Field | Input Type | Required |
-|---|---|---|
-| First Name | `text` | Yes |
-| Last Name | `text` | Yes |
-| Company Name | `text` | Yes |
-| Phone Number | `tel` | Yes |
-| Email Address | `email` | Yes |
-| Preferred Date | `date` | Yes |
-| Preferred Time | `select` (Morning / Afternoon / Evening) | Yes |
+| Field | Input Type | Required | Payload Key |
+|---|---|---|---|
+| Full Name | `text` | Yes | `fullName` |
+| Phone | `tel` | Yes | `phone` |
+| Email | `email` | Yes | `email` |
+| Company / Organisation | `text` | No | `company` |
+| How can we help? | `textarea` | No | `message` |
+| *(prop)* Source | — | auto | `source` |
+| *(prop)* Course Detail | — | auto | `courseDetail` |
+| *(auto)* Submitted At | — | auto | `submittedAt` (ISO) |
+| *(auto)* Page URL | — | auto | `pageUrl` |
 
-### Component Code
+### handleSubmit — Webhook Pattern
 
 ```tsx
-import React, { useState, useEffect } from 'react';
-import { X, Send, Calendar, Clock, Loader2, CheckCircle } from 'lucide-react';
+const WEBHOOK_URL = import.meta.env.VITE_BOOKING_WEBHOOK_URL as string;
 
-interface BookingModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setStatus('loading');
+  setErrorMsg('');
+
+  const payload = {
+    fullName:     formData.fullName.trim(),
+    phone:        formData.phone.trim(),
+    email:        formData.email.trim(),
+    company:      formData.company.trim(),
+    message:      formData.message.trim(),
+    source,
+    courseDetail: courseDetail ?? '',
+    submittedAt:  new Date().toISOString(),
+    pageUrl:      window.location.href,
+  };
+
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('Submission failed');
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Submission failed');
+    setStatus('success');
+  } catch (err: unknown) {
+    setStatus('error');
+    setErrorMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+  }
+};
+```
+
+### Required Environment Variable
+
+```env
+VITE_BOOKING_WEBHOOK_URL=https://your-n8n.railway.app/webhook/your-webhook-path
+```
+
+Use `/webhook/` (production, workflow active) or `/webhook-test/` (manual testing only).
+
+### n8n Booking Workflow — Node Breakdown
+
+| # | Node | Type | Purpose |
+|---|---|---|---|
+| 1 | Booking Form Webhook | Webhook (POST) | Receives JSON from modal |
+| 2 | Validate Lead Data | Code (JS) | Checks fullName/phone/email present; normalises payload |
+| 3 | Is Valid? | IF | Branches on `isValid` boolean |
+| 4 | Create Airtable Record | HTTP Request (POST) | Writes lead to Airtable |
+| 5 | Respond Success | Respond to Webhook | `{ success: true, message: "Lead submitted successfully" }` |
+| 6 | Respond Validation Error | Respond to Webhook | `{ success: false, message: "Missing required fields: …" }` |
+
+**n8n JSON Body (Create Airtable Record node):**
+
+```json
+{
+  "fields": {
+    "Name": "={{ $json.fullName }}",
+    "Email": "={{ $json.email }}",
+    "Phone": "={{ $json.phone }}",
+    "Company": "={{ $json.company || '' }}",
+    "Message": "={{ $json.message || '' }}",
+    "Source": "={{ $json.source }}",
+    "Course / Service Detail": "={{ $json.courseDetail || '' }}",
+    "Status": "New",
+    "Date Submitted": "={{ $json.submittedAt.split('T')[0] }}",
+    "Page URL": "={{ $json.pageUrl || '' }}"
+  }
 }
+```
 
-const AIRTABLE_TOKEN = import.meta.env.VITE_AIRTABLE_TOKEN;
-const LEADS_BASE     = import.meta.env.VITE_AIRTABLE_LEADS_BASE;
-const LEADS_TABLE    = import.meta.env.VITE_AIRTABLE_LEADS_TABLE;
+### Airtable Table Schema (Booking Leads)
 
-const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
-  const [formData, setFormData] = useState({
-    firstName: '', lastName: '', companyName: '',
-    phoneNumber: '', email: '', date: '', time: ''
-  });
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+| Field Name | Field Type | Notes |
+|---|---|---|
+| Name | Single line text | Primary field |
+| Email | Single line text | — |
+| Phone | Phone number | — |
+| Company | Single line text | — |
+| Message | Long text | — |
+| Source | Single line text | Always `"Website Form"` |
+| Course / Service Detail | Single line text | From modal prop |
+| Status | Single select | Options: New, Contacted, In Progress, Converted, Closed |
+| Date Submitted | Date | YYYY-MM-DD |
+| Comment Text | Long text | Internal notes only — not submitted by form |
+| Page URL | Single line text | Auto-captured from `window.location.href` |
   const [errorMsg, setErrorMsg] = useState('');
 
   // Lock body scroll when open

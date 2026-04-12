@@ -12,9 +12,7 @@ interface LeadCaptureModalProps {
   postSuccess?: React.ReactNode;
 }
 
-const AIRTABLE_TOKEN = import.meta.env.VITE_BOOKING_AIRTABLE_TOKEN as string;
-const LEADS_BASE     = import.meta.env.VITE_BOOKING_AIRTABLE_BASE as string;
-const LEADS_TABLE    = import.meta.env.VITE_BOOKING_AIRTABLE_TABLE as string;
+const WEBHOOK_URL = import.meta.env.VITE_BOOKING_WEBHOOK_URL as string;
 
 const initialForm = {
   fullName: '',
@@ -64,32 +62,30 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
     setStatus('loading');
     setErrorMsg('');
 
-    const fields: Record<string, string> = {
-      Name:    formData.fullName.trim(),
-      Phone:   formData.phone.trim(),
-      Email:   formData.email.trim(),
-      Company: formData.company.trim(),
-      Message: formData.message.trim(),
-      Source:  source,
-      Status:  'New',
+    const payload = {
+      fullName:     formData.fullName.trim(),
+      phone:        formData.phone.trim(),
+      email:        formData.email.trim(),
+      company:      formData.company.trim(),
+      message:      formData.message.trim(),
+      source,
+      courseDetail: courseDetail ?? '',
+      submittedAt:  new Date().toISOString(),
+      pageUrl:      window.location.href,
     };
 
     try {
-      const res = await fetch(
-        `https://api.airtable.com/v0/${LEADS_BASE}/${LEADS_TABLE}`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${AIRTABLE_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ fields }),
-        }
-      );
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err?.error?.message || 'Submission failed');
-      }
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error('Submission failed');
+
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || 'Submission failed');
+
       setStatus('success');
     } catch (err: unknown) {
       setStatus('error');

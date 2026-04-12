@@ -1,0 +1,169 @@
+{
+  "name": "Cygnus Booking Lead Capture",
+  "nodes": [
+    {
+      "id": "a1b2c3d4-0001-0001-0001-000000000001",
+      "name": "Booking Form Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "96b990ab-967c-4b1f-ab02-b2fd48609280",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "a1b2c3d4-0002-0002-0002-000000000002",
+      "name": "Validate Lead Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300],
+      "parameters": {
+        "jsCode": "const body = $json.body ?? $json;\n\nconst requiredFields = ['fullName', 'phone', 'email'];\n\nconst missing = requiredFields.filter(field => {\n  const value = body[field];\n  return !value || String(value).trim() === '';\n});\n\nif (missing.length > 0) {\n  return [{\n    json: {\n      isValid: false,\n      message: 'Missing required fields: ' + missing.join(', ')\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    isValid: true,\n    fullName:     String(body.fullName).trim(),\n    phone:        String(body.phone).trim(),\n    email:        String(body.email).trim(),\n    company:      body.company     ? String(body.company).trim()     : '',\n    message:      body.message     ? String(body.message).trim()     : '',\n    courseDetail: body.courseDetail ? String(body.courseDetail).trim() : '',\n    source:       body.source      ? String(body.source)             : 'Website Form',\n    submittedAt:  body.submittedAt || new Date().toISOString()\n  }\n}];"
+      }
+    },
+    {
+      "id": "a1b2c3d4-0003-0003-0003-000000000003",
+      "name": "Is Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-isvalid",
+              "leftValue": "={{ $json.isValid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "a1b2c3d4-0004-0004-0004-000000000004",
+      "name": "Create Airtable Record",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 180],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.airtable.com/v0/appHQyopAvjR5v8Vk/tblzUc95p4Fjk50Au",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_AIRTABLE_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ ({ fields: { 'Name': $json.fullName, 'Email': $json.email, 'Phone': $json.phone, 'Company': $json.company || '', 'Message': $json.message || '', 'Source': $json.source, 'Course / Service Detail': $json.courseDetail || '', 'Status': 'New', 'Date Submitted': $json.submittedAt.split('T')[0], 'Page URL': $json.pageUrl || '' } }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "a1b2c3d4-0005-0005-0005-000000000005",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1120, 180],
+      "parameters": {
+        "respondWith": "json",
+        "responseCode": 200,
+        "responseBody": "={{ ({ success: true, message: 'Lead submitted successfully' }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "a1b2c3d4-0006-0006-0006-000000000006",
+      "name": "Respond Validation Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 440],
+      "parameters": {
+        "respondWith": "json",
+        "responseCode": 400,
+        "responseBody": "={{ ({ success: false, message: $json.message }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Booking Form Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Lead Data": {
+      "main": [
+        [
+          {
+            "node": "Is Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Valid?": {
+      "main": [
+        [
+          {
+            "node": "Create Airtable Record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Validation Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Airtable Record": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

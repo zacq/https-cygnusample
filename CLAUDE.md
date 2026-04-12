@@ -49,7 +49,7 @@ No test suite is configured.
 ### Key components
 | Component | Purpose |
 |---|---|
-| `LeadCaptureModal` | Reusable modal → POST to Airtable (`VITE_BOOKING_AIRTABLE_*` env vars). Contains a red informational payment box (Paybill 453521) that is **never submitted**. |
+| `LeadCaptureModal` | Reusable modal → POST to n8n webhook (`VITE_BOOKING_WEBHOOK_URL`). n8n validates and writes to Airtable server-side. Contains a red informational payment box (Paybill 453521) that is **never submitted**. |
 | `PromoPopup` | Semi-translucent 2-column widget. Appears when `id="page-hero"` scrolls out of view (IntersectionObserver). LHS: next NCA session from `ncaSessions.ts`. RHS: download CTA for BCIE Calendar PDF. Active on Home, BE, Services, Blog. |
 | `FloatingChatWidget` | Apex AI advisor — posts to n8n webhook (`VITE_CHAT_WEBHOOK_URL`), falls back to static responses. |
 | `Hero` | Canvas particle network (70 nodes, MAX_DIST 160px). |
@@ -60,12 +60,14 @@ No test suite is configured.
 
 ### Env vars
 ```
-VITE_BOOKING_AIRTABLE_TOKEN=   # Booking form → Airtable
-VITE_BOOKING_AIRTABLE_BASE=
-VITE_BOOKING_AIRTABLE_TABLE=
+VITE_BOOKING_WEBHOOK_URL=      # LeadCaptureModal → n8n webhook (n8n writes to Airtable)
 VITE_CHAT_WEBHOOK_URL=         # FloatingChatWidget → n8n
 ```
 Add to `.env` locally; add to Netlify dashboard for production. Never commit `.env` or real tokens in `.env.example`.
+
+**Booking webhook URLs:**
+- Production (workflow active): `https://primary-production-bfd8.up.railway.app/webhook/96b990ab-967c-4b1f-ab02-b2fd48609280`
+- Test (workflow inactive): `https://primary-production-bfd8.up.railway.app/webhook-test/96b990ab-967c-4b1f-ab02-b2fd48609280`
 
 ### Downloadable resource
 All download buttons across the site serve `/2026 BCIE Calendar.pdf` from `public/`. To swap the file, replace it in `public/` and update the filename reference in:
