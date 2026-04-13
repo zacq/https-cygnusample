@@ -21,7 +21,7 @@
       "typeVersion": 2,
       "position": [460, 300],
       "parameters": {
-        "jsCode": "const body = $json.body ?? $json;\n\nconst requiredFields = ['fullName', 'phone', 'email'];\n\nconst missing = requiredFields.filter(field => {\n  const value = body[field];\n  return !value || String(value).trim() === '';\n});\n\nif (missing.length > 0) {\n  return [{\n    json: {\n      isValid: false,\n      message: 'Missing required fields: ' + missing.join(', ')\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    isValid: true,\n    fullName:     String(body.fullName).trim(),\n    phone:        String(body.phone).trim(),\n    email:        String(body.email).trim(),\n    company:      body.company     ? String(body.company).trim()     : '',\n    message:      body.message     ? String(body.message).trim()     : '',\n    courseDetail: body.courseDetail ? String(body.courseDetail).trim() : '',\n    source:       body.source      ? String(body.source)             : 'Website Form',\n    submittedAt:  body.submittedAt || new Date().toISOString()\n  }\n}];"
+        "jsCode": "const body = $json.body ?? $json;\n\nconst requiredFields = ['fullName', 'phone', 'email'];\n\nconst missing = requiredFields.filter(field => {\n  const value = body[field];\n  return !value || String(value).trim() === '';\n});\n\nif (missing.length > 0) {\n  return [{\n    json: {\n      isValid: false,\n      message: 'Missing required fields: ' + missing.join(', ')\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    isValid: true,\n    fullName:     String(body.fullName).trim(),\n    phone:        String(body.phone).trim(),\n    email:        String(body.email).trim(),\n    company:      body.company      ? String(body.company).trim()      : '',\n    message:      body.message      ? String(body.message).trim()      : '',\n    courseDetail: body.courseDetail  ? String(body.courseDetail).trim() : '',\n    source:       body.source        ? String(body.source)              : 'Website Form',\n    submittedAt:  body.submittedAt  || new Date().toISOString(),\n    pageUrl:      body.pageUrl       ? String(body.pageUrl).trim()      : ''\n  }\n}];"
       }
     },
     {
@@ -60,7 +60,7 @@
       "position": [900, 180],
       "parameters": {
         "method": "POST",
-        "url": "https://api.airtable.com/v0/appHQyopAvjR5v8Vk/tblzUc95p4Fjk50Au",
+        "url": "https://api.airtable.com/v0/appCDdfoFtTmAhsTY/tblzQJc9lYGjXmSvS",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -72,7 +72,42 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ ({ fields: { 'Name': $json.fullName, 'Email': $json.email, 'Phone': $json.phone, 'Company': $json.company || '', 'Message': $json.message || '', 'Source': $json.source, 'Course / Service Detail': $json.courseDetail || '', 'Status': 'New', 'Date Submitted': $json.submittedAt.split('T')[0], 'Page URL': $json.pageUrl || '' } }) }}",
+        "jsonBody": "={{ ({ fields: { 'Name': $json.fullName, 'Email': $json.email, 'Phone': $json.phone, 'Company': $json.company || '', 'Message': $json.message || '', 'Source': $json.source, 'Course / Service Detail': $json.courseDetail || '', 'Status': 'New', 'Email Status': 'Pending', 'Date Submitted': $json.submittedAt.split('T')[0], 'Page URL': $json.pageUrl || '' } }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "a1b2c3d4-0007-0007-0007-000000000007",
+      "name": "Send Welcome Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 180],
+      "continueOnFail": true,
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/smtp/email",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api-key",
+              "value": "YOUR_BREVO_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ ({ sender: { name: 'Cygnus Safety Consulting Ltd', email: 'info@cygnus.co.ke' }, to: [{ email: $('Validate Lead Data').item.json.email, name: $('Validate Lead Data').item.json.fullName }], subject: 'Welcome to Operational Excellence for Sustainable Constructions', htmlContent: '<p>Dear ' + $('Validate Lead Data').item.json.fullName + ',</p><p>Thank you for registering for <strong>Operational Excellence for Sustainable Constructions</strong>.</p><p>The event will be live on <strong>15th &amp; 18th June 2026</strong> from <strong>9 am to 4 pm</strong>.</p><p>Find the joining Zoom meeting link below:</p><p><a href=\"https://us05web.zoom.us/j/82613003259?pwd=fy3fNEgogfg80dqnic75NRJ8CVFbEv.1\">Join Zoom Meeting</a></p><p><strong>Meeting ID:</strong> 826 1300 3259<br/><strong>Passcode:</strong> 7S2Cu1</p><p>Thanks and Kind Regards.<br/><strong>Cygnus Safety Consulting Ltd</strong><br/>A: Kiambu Road, Nairobi, Kenya.<br/>P: 0717925881 &nbsp; M: 0746962288<br/>E: info@cygnus.co.ke &nbsp;||&nbsp; W: www.cygnus.co.ke</p>' }) }}",
         "options": {
           "response": {
             "response": {
@@ -87,7 +122,7 @@
       "name": "Respond Success",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1120, 180],
+      "position": [1340, 180],
       "parameters": {
         "respondWith": "json",
         "responseCode": 200,
@@ -151,6 +186,17 @@
       ]
     },
     "Create Airtable Record": {
+      "main": [
+        [
+          {
+            "node": "Send Welcome Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Welcome Email": {
       "main": [
         [
           {
