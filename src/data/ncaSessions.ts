@@ -24,8 +24,8 @@ export const NCA_SESSIONS: NCASession[] = [
   },
   {
     id: 6,
-    date: '15 & 18 June 2026',
-    startDate: '2026-06-15',
+    date: '29 & 30 June 2026',
+    startDate: '2026-06-29',
     time: '9:00 AM – 4:00 PM',
     topic: 'Managing Construction Site Safety Using Risk Assessment',
     program: 'Operational Excellence for Sustainable Constructions',
