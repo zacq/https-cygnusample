@@ -131,7 +131,7 @@ LeadCaptureModal (browser)
 | # | Node | Type | Purpose |
 |---|---|---|---|
 | 1 | Booking Form Webhook | Webhook (POST) | Receives JSON from LeadCaptureModal |
-| 2 | Validate Lead Data | Code (JS) | Validates fullName/phone/email; normalises all fields incl. pageUrl |
+| 2 | Validate Lead Data | Code (JS) | Validates fullName/phone/email; normalises fields; detects session from `courseDetail` and builds `emailHtml` + `emailSubject` |
 | 3 | Is Valid? | IF | Branches on `isValid` boolean |
 | 4 | Create Airtable Record | HTTP Request → Airtable API | Writes lead with `Email Status: Pending` |
 | 5 | Send Welcome Email | HTTP Request → Brevo API | Sends HTML welcome email; `continueOnFail: true` so lead is never lost if email fails |
@@ -202,10 +202,16 @@ Do NOT wrap the entire body in a single `={{ ({ ... }) }}` expression — n8n UI
 | CNAME | `brevo2._domainkey` | `b2.cygnus-co-ke.dkim.brevo.com` |
 | TXT | `_dmarc` | `v=DMARC1; p=none; rua=mailto:rua@dmarc.brevo.com` |
 
-**Current welcome email:** Operational Excellence for Sustainable Constructions — 15th & 18th June 2026
-- Zoom: `https://us05web.zoom.us/j/82613003259?pwd=fy3fNEgogfg80dqnic75NRJ8CVFbEv.1`
-- Meeting ID: `826 1300 3259` | Passcode: `7S2Cu1`
-- Static link per event — one fixed link sent to all registrants (no per-user Zoom generation needed)
+**Session-specific emails:** `courseDetail` field is used to detect which session the registrant booked and route the correct Zoom details into the email.
+
+| Session | courseDetail match | Zoom Link | Meeting ID | Passcode |
+|---|---|---|---|---|
+| May 11 & 14 | contains `safety as a value` | `https://us06web.zoom.us/j/84515536711?pwd=jvKybt8VnGIKrBaSOi0EXxyc1Jn2vo.1` | `845 1553 6711` | `1PFYGt` |
+| Jun 29 & 30 | default (Risk Assessment / June) | `https://us06web.zoom.us/j/89785548140?pwd=sTHQyngQjaBU3aeSoDybal94eAVbvC.1` | `897 8554 8140` | `3vpRme` |
+
+- Detection logic lives in the **Validate Lead Data** code node — update there when adding new sessions
+- Static Zoom link per event — one fixed link sent to all registrants (no per-user generation needed)
+- `emailHtml` and `emailSubject` are built in the code node and passed to the Brevo HTTP Request node
 
 ---
 
