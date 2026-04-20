@@ -760,6 +760,7 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
         source={modal.source}
         heading="Register for the Program"
         subheading="3-Day Operations Excellence Training — online, certificate included"
+        bceMode
       />
     </main>
   );

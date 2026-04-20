@@ -10,6 +10,8 @@ interface LeadCaptureModalProps {
   heading?: string;
   subheading?: string;
   postSuccess?: React.ReactNode;
+  ncaMode?: boolean;
+  bceMode?: boolean;
 }
 
 const WEBHOOK_URL = import.meta.env.VITE_BOOKING_WEBHOOK_URL as string;
@@ -20,6 +22,11 @@ const initialForm = {
   email: '',
   company: '',
   message: '',
+  idNo: '',
+  ncaReg: '',
+  designation: '',
+  sessionCount: '1',
+  mpesaRef: '',
 };
 
 const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
@@ -30,7 +37,10 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
   heading = 'Get in Touch',
   subheading = 'No commitment — just clarity on how we can help.',
   postSuccess,
+  ncaMode = false,
+  bceMode = false,
 }) => {
+  const extendedMode = ncaMode || bceMode;
   const [formData, setFormData] = useState(initialForm);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -72,6 +82,13 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
       courseDetail: courseDetail ?? '',
       submittedAt:  new Date().toISOString(),
       pageUrl:      window.location.href,
+      ...(extendedMode && {
+        idNo:         formData.idNo.trim(),
+        ncaReg:       formData.ncaReg.trim(),
+        designation:  formData.designation.trim(),
+        mpesaRef:     formData.mpesaRef.trim(),
+        ...(ncaMode && { sessionCount: formData.sessionCount }),
+      }),
     };
 
     try {
@@ -177,7 +194,7 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
                     </div>
                   )}
 
-                  <form onSubmit={handleSubmit} className="space-y-4">
+                  <form onSubmit={handleSubmit} className="space-y-3.5">
                     {/* Full Name */}
                     <div>
                       <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
@@ -195,7 +212,7 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
                     </div>
 
                     {/* Phone + Email */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
                           Phone <span className="text-brand-blue">*</span>
@@ -226,20 +243,123 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
                       </div>
                     </div>
 
-                    {/* Company */}
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
-                        Company / Organisation
-                      </label>
-                      <input
-                        type="text"
-                        name="company"
-                        placeholder="Acme Industries Ltd (optional)"
-                        value={formData.company}
-                        onChange={handleChange}
-                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
-                      />
-                    </div>
+                    {/* Company + NCA Reg (extended mode) or Company full-width */}
+                    {extendedMode ? (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
+                            Company / Organisation
+                          </label>
+                          <input
+                            type="text"
+                            name="company"
+                            placeholder="Acme Ltd"
+                            value={formData.company}
+                            onChange={handleChange}
+                            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
+                            NCA Reg No. <span className="text-brand-blue">*</span>
+                          </label>
+                          <input
+                            required
+                            type="text"
+                            name="ncaReg"
+                            placeholder="NCA-XXXXX"
+                            value={formData.ncaReg}
+                            onChange={handleChange}
+                            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
+                          Company / Organisation
+                        </label>
+                        <input
+                          type="text"
+                          name="company"
+                          placeholder="Acme Industries Ltd (optional)"
+                          value={formData.company}
+                          onChange={handleChange}
+                          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
+                        />
+                      </div>
+                    )}
+
+                    {/* Extended: ID No + Designation */}
+                    {extendedMode && (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
+                            ID No. <span className="text-brand-blue">*</span>
+                          </label>
+                          <input
+                            required
+                            type="text"
+                            name="idNo"
+                            placeholder="12345678"
+                            value={formData.idNo}
+                            onChange={handleChange}
+                            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
+                            Designation <span className="text-brand-blue">*</span>
+                          </label>
+                          <input
+                            required
+                            type="text"
+                            name="designation"
+                            placeholder="Site Engineer"
+                            value={formData.designation}
+                            onChange={handleChange}
+                            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* NCA-only: Sessions + MPESA ref / BCE: MPESA ref only */}
+                    {extendedMode && (
+                      <div className="grid grid-cols-2 gap-3">
+                        {ncaMode && (
+                          <div>
+                            <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
+                              Sessions Booked <span className="text-brand-blue">*</span>
+                            </label>
+                            <select
+                              required
+                              name="sessionCount"
+                              value={formData.sessionCount}
+                              onChange={e => setFormData(prev => ({ ...prev, sessionCount: e.target.value }))}
+                              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all bg-white"
+                            >
+                              <option value="1">1 session</option>
+                              <option value="2">2 sessions</option>
+                            </select>
+                          </div>
+                        )}
+                        <div className={ncaMode ? '' : 'col-span-2'}>
+                          <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
+                            M-PESA / Bank Ref <span className="text-brand-blue">*</span>
+                          </label>
+                          <input
+                            required
+                            type="text"
+                            name="mpesaRef"
+                            placeholder="QHX4XXXXXX"
+                            value={formData.mpesaRef}
+                            onChange={handleChange}
+                            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
+                          />
+                        </div>
+                      </div>
+                    )}
 
                     {/* Payment info — informational only, never submitted */}
                     <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 space-y-1">
@@ -248,20 +368,22 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
                       <p className="text-sm font-semibold text-red-600">Account No: <span className="font-bold">Company Name</span></p>
                     </div>
 
-                    {/* Message */}
-                    <div>
-                      <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
-                        How can we help?
-                      </label>
-                      <textarea
-                        name="message"
-                        rows={3}
-                        placeholder="Briefly describe your challenge or goal (optional)"
-                        value={formData.message}
-                        onChange={handleChange}
-                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all resize-none"
-                      />
-                    </div>
+                    {/* Message — hidden in extended modes */}
+                    {!extendedMode && (
+                      <div>
+                        <label className="text-sm font-semibold text-slate-700 mb-1.5 block">
+                          How can we help?
+                        </label>
+                        <textarea
+                          name="message"
+                          rows={3}
+                          placeholder="Briefly describe your challenge or goal (optional)"
+                          value={formData.message}
+                          onChange={handleChange}
+                          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all resize-none"
+                        />
+                      </div>
+                    )}
 
                     {/* Error */}
                     {status === 'error' && (
@@ -284,7 +406,7 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
                       ) : (
                         <>
                           <Send className="w-5 h-5" />
-                          Send Message
+                          {ncaMode ? 'Book Now' : bceMode ? 'Reserve Your Seat' : 'Send Message'}
                         </>
                       )}
                     </button>

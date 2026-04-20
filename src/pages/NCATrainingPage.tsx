@@ -377,6 +377,7 @@ const NCATrainingPage: React.FC = () => {
         heading="Register for Session"
         subheading={selectedSession ? `${selectedSession.date} · ${selectedSession.time} · ${selectedSession.cpd} CPD points` : undefined}
         postSuccess={<PaymentInstructions />}
+        ncaMode
       />
     </main>
   );

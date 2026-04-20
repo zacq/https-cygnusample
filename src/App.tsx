@@ -817,13 +817,16 @@ const Footer: React.FC = () => (
 // ─── Root App ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
-  const [modal, setModal] = useState<{ open: boolean; source: string }>({ open: false, source: '' });
+  const [modal, setModal] = useState<{ open: boolean; source: string; ncaMode?: boolean }>({ open: false, source: '' });
 
   const openBooking = (source = 'Navbar — Book a Call') => setModal({ open: true, source });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
-    const onBookingEvent = () => setModal({ open: true, source: 'Chat Widget' });
+    const onBookingEvent = () => {
+      const isNCAPage = window.location.pathname.includes('/training/nca');
+      setModal({ open: true, source: isNCAPage ? 'NCA Page — Chat Widget' : 'Chat Widget', ncaMode: isNCAPage });
+    };
 
     // Global click intercept — maps button text → source
     const onGlobalClick = (e: MouseEvent) => {
@@ -884,6 +887,7 @@ export default function App() {
         isOpen={modal.open}
         onClose={() => setModal(s => ({ ...s, open: false }))}
         source={modal.source}
+        ncaMode={modal.ncaMode}
       />
       <FloatingChatWidget />
     </BrowserRouter>

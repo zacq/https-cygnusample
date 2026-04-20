@@ -173,6 +173,7 @@ const PromoPopup: React.FC<PromoPopupProps> = ({ heroId = 'page-hero' }) => {
           courseDetail={`${nextSession.topic} · ${nextSession.date} · ${nextSession.cpd} CPD`}
           heading="Register for Session"
           subheading={`${nextSession.date} · ${nextSession.time} · ${nextSession.cpd} CPD Points`}
+          ncaMode
         />
       )}
     </>
