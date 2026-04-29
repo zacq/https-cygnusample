@@ -118,7 +118,7 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-blue/20 border border-brand-blue/40 text-brand-accent text-xs font-bold uppercase tracking-widest mb-6"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-brand-accent animate-pulse" />
-            3-Day Operations Excellence Training
+            2-Day Operations Excellence Training
           </motion.span>
 
           <motion.h1
@@ -134,7 +134,7 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
             className="text-lg text-slate-300 max-w-2xl mb-10 leading-relaxed"
           >
             Organizations today face increasing pressure to improve efficiency, reduce operational
-            waste, and remain competitive in rapidly evolving markets. This 3-day program equips
+            waste, and remain competitive in rapidly evolving markets. This 2-day program equips
             professionals with practical tools to transform operations, strengthen financial
             decision-making, and drive sustainable growth.
           </motion.p>
@@ -164,7 +164,7 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
             className="flex flex-wrap gap-8 mt-14 border-t border-white/10 pt-10"
           >
             {[
-              { label: 'Duration',      value: '3 Days' },
+              { label: 'Duration',      value: '2 Days' },
               { label: 'Format',        value: 'Online' },
               { label: 'Certification', value: 'Certificate' },
               { label: 'CPD Credits',   value: 'Included' },
@@ -517,11 +517,11 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
               transition={{ delay: 0.1 }}
               className="text-4xl md:text-5xl font-display text-white"
             >
-              3 Days. 6 Topics. Lasting Results.
+              2 Days. 4 Topics. Lasting Results.
             </motion.h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid md:grid-cols-2 gap-5">
             {[
               {
                 day: 'Day 1', title: 'Building the Foundation',
@@ -533,11 +533,6 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
                 color: 'from-violet-600 to-violet-400', glow: 'shadow-violet-500/30',
                 bullets: ['Strategy Deployment Success', 'Business Finance for Operations Leaders'],
               },
-              {
-                day: 'Day 3', title: 'Driving Sustainability',
-                color: 'from-emerald-600 to-emerald-400', glow: 'shadow-emerald-500/30',
-                bullets: ['Lean Six Sigma', 'ESG for Sustainability'],
-              },
             ].map((card, i) => (
               <motion.div
                 key={card.day}
@@ -545,7 +540,7 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
                 transition={{ delay: i * 0.12, duration: 0.6 }}
                 className="relative group"
               >
-                {i < 2 && (
+                {i < 1 && (
                   <div className="hidden md:block absolute top-8 left-[calc(100%+0px)] w-full h-px z-0">
                     <motion.div
                       initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
@@ -613,23 +608,6 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
         ]}
       />
 
-      {/* ── Day 3 ─────────────────────────────────────────────────────────── */}
-      <DaySection
-        day={3} label="Day 3" title="Driving Sustainability and Efficiency"
-        color="from-emerald-600 to-emerald-400"
-        topics={[
-          {
-            icon: <Layers className="w-6 h-6" />,
-            title: 'Lean Six Sigma',
-            body: 'Learn how Lean Six Sigma helps eliminate waste, improve quality, and accelerate operational processes. Participants are introduced to the DMAIC improvement methodology.',
-          },
-          {
-            icon: <Leaf className="w-6 h-6" />,
-            title: 'ESG for Sustainability',
-            body: 'Understand Environmental, Safety, and Governance (ESG) frameworks and how integrating sustainability into operations improves compliance, reputation, and stakeholder trust.',
-          },
-        ]}
-      />
 
       {/* ── Social Proof ──────────────────────────────────────────────────── */}
       <section className="py-24 bg-brand-navy overflow-hidden relative">
@@ -713,7 +691,7 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
                 <span className="italic text-brand-accent">Excellence Program</span>
               </h2>
               <p className="text-lg text-white/65 mb-8 max-w-2xl mx-auto leading-relaxed">
-                This 3-day intensive program equips professionals with the frameworks used by
+                This 2-day intensive program equips professionals with the frameworks used by
                 leading organizations to improve operational performance, financial discipline,
                 and sustainable growth.
               </p>
@@ -721,7 +699,7 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
               {/* Summary pills */}
               <div className="flex flex-wrap justify-center gap-3 mb-10">
                 {[
-                  { icon: <Calendar className="w-4 h-4" />, text: '3 Days' },
+                  { icon: <Calendar className="w-4 h-4" />, text: '2 Days' },
                   { icon: <Users className="w-4 h-4" />,    text: 'Online Training' },
                   { icon: <CheckCircle className="w-4 h-4" />, text: 'Certificate of Completion' },
                 ].map(p => (
@@ -759,7 +737,7 @@ const BusinessExcellenceTrainingPage: React.FC = () => {
         onClose={() => setModal(s => ({ ...s, open: false }))}
         source={modal.source}
         heading="Register for the Program"
-        subheading="3-Day Operations Excellence Training — online, certificate included"
+        subheading="2-Day Operations Excellence Training — online, certificate included"
         bceMode
       />
     </main>

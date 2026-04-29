@@ -85,16 +85,10 @@ const NCATrainingPage: React.FC = () => {
             className="flex flex-wrap justify-center gap-4"
           >
             <button
-              onClick={() => openSession(SESSIONS[0])}
+              onClick={scrollToCalendar}
               className="bg-[#79B56E] hover:bg-[#5a9a4f] text-white px-9 py-4 rounded-xl font-bold text-lg transition-all shadow-xl"
             >
-              Register Now
-            </button>
-            <button
-              onClick={scrollToCalendar}
-              className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-9 py-4 rounded-xl font-bold text-lg transition-all"
-            >
-              View Calendar
+              View Calendar &amp; Register
             </button>
           </motion.div>
 

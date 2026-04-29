@@ -22,6 +22,8 @@ import ServicesPage from './pages/ServicesPage';
 import BlogPage      from './pages/BlogPage';
 import ArticlePage   from './pages/ArticlePage';
 import MeetUsPage    from './pages/MeetUsPage';
+import EventsPage   from './pages/EventsPage';
+import TrainingCataloguePage from './pages/TrainingCataloguePage';
 
 // ─── Global CTA trigger → source mapping ─────────────────────────────────────
 const CTA_SOURCE_MAP: Record<string, string> = {
@@ -48,13 +50,15 @@ const navLinks: NavLink[] = [
   {
     name: 'Training',
     children: [
-      { name: 'NCA Training',                  to: '/training/nca' },
-      { name: 'Business Excellence Training',  to: '/training/business-excellence' },
+      { name: 'NCA Training',                      to: '/training/nca' },
+      { name: 'Business Excellence Annual Program', to: '/training/business-excellence' },
+      { name: 'Training Catalogue',                to: '/training/catalogue' },
     ],
   },
-  { name: 'Services', to: '/services' },
-  { name: 'Blog',     to: '/blog' },
-  { name: 'Contact',  href: '#contact' },
+  { name: 'Services',          to: '/services' },
+  { name: 'Events & Partners', to: '/events' },
+  { name: 'Blog',              to: '/blog' },
+  { name: 'Contact',           href: '#contact' },
 ];
 
 const Navbar: React.FC<{ scrolled: boolean; onBookingClick: () => void }> = ({ scrolled, onBookingClick }) => {
@@ -878,7 +882,9 @@ export default function App() {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/blog"     element={<BlogPage />} />
           <Route path="/blog/:slug" element={<ArticlePage />} />
-          <Route path="/meet-us"   element={<MeetUsPage />} />
+          <Route path="/meet-us"          element={<MeetUsPage />} />
+          <Route path="/events"           element={<EventsPage />} />
+          <Route path="/training/catalogue" element={<TrainingCataloguePage />} />
         </Routes>
         <Footer />
       </div>
