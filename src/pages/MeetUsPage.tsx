@@ -38,7 +38,7 @@ const MeetUsPage: React.FC = () => {
     <main className="font-sans">
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <section className="relative pt-32 pb-24 bg-brand-navy overflow-hidden">
+      <section className="relative pt-16 pb-24 bg-brand-navy overflow-hidden">
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] rounded-full bg-brand-blue/10 blur-[120px] pointer-events-none" />
         <div
           className="absolute inset-0 opacity-[0.03] pointer-events-none"

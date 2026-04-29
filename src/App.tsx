@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Menu, X, ArrowRight, Zap, ShieldCheck, Clock,
@@ -761,7 +761,7 @@ const Footer: React.FC = () => (
         <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-6">Company</h4>
         <ul className="space-y-3 text-slate-400 text-sm">
           {['About Cygnus', 'Our Process', 'Case Studies', 'Blog & Insights', 'Careers'].map(s => (
-            <li key={s}><a href="#" className="hover:text-brand-blue transition-colors">{s}</a></li>
+            <li key={s}><Link to="/" className="hover:text-brand-blue transition-colors">{s}</Link></li>
           ))}
           <li>
             <Link to="/meet-us" className="hover:text-brand-blue transition-colors">Meet Us</Link>
@@ -818,6 +818,64 @@ const Footer: React.FC = () => (
   </footer>
 );
 
+// ─── App Shell (needs router context for useLocation) ─────────────────────────
+function AppShell({
+  scrolled,
+  modal,
+  openBooking,
+  setModal,
+}: {
+  scrolled: boolean;
+  modal: { open: boolean; source: string; ncaMode?: boolean };
+  openBooking: (source?: string) => void;
+  setModal: React.Dispatch<React.SetStateAction<{ open: boolean; source: string; ncaMode?: boolean }>>;
+}) {
+  const location = useLocation();
+  const hiddenNavRoutes = ['/meet-us'];
+  const showNav = !hiddenNavRoutes.includes(location.pathname);
+
+  return (
+    <div className="font-sans overflow-x-hidden">
+      {showNav && <Navbar scrolled={scrolled} onBookingClick={() => openBooking('Navbar — Book a Call')} />}
+      <Routes>
+        <Route path="/" element={
+          <>
+            <Hero />
+            <TrustedTeams />
+            <Benefits />
+            <ProblemSection />
+            <Services />
+            <About />
+            <Training />
+            <SystemSection />
+            <Testimonials />
+            <CTASection />
+            <PromoPopup />
+          </>
+        } />
+        <Route path="/business-excellence" element={<BusinessExcellencePage />} />
+        <Route path="/training/nca" element={<NCATrainingPage />} />
+        <Route path="/training/business-excellence" element={<BusinessExcellenceTrainingPage />} />
+        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/blog"     element={<BlogPage />} />
+        <Route path="/blog/:slug" element={<ArticlePage />} />
+        <Route path="/meet-us"          element={<MeetUsPage />} />
+        <Route path="/events"           element={<EventsPage />} />
+        <Route path="/training/catalogue" element={<TrainingCataloguePage />} />
+      </Routes>
+      <Footer />
+
+      <LeadCaptureModal
+        isOpen={modal.open}
+        onClose={() => setModal(s => ({ ...s, open: false }))}
+        source={modal.source}
+        ncaMode={modal.ncaMode}
+      />
+      <FloatingChatWidget />
+    </div>
+  );
+}
+
 // ─── Root App ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -858,44 +916,12 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="font-sans overflow-x-hidden">
-        <Navbar scrolled={scrolled} onBookingClick={() => openBooking('Navbar — Book a Call')} />
-        <Routes>
-          <Route path="/" element={
-            <>
-              <Hero />
-              <TrustedTeams />
-              <Benefits />
-              <ProblemSection />
-              <Services />
-              <About />
-              <Training />
-              <SystemSection />
-              <Testimonials />
-              <CTASection />
-              <PromoPopup />
-            </>
-          } />
-          <Route path="/business-excellence" element={<BusinessExcellencePage />} />
-          <Route path="/training/nca" element={<NCATrainingPage />} />
-          <Route path="/training/business-excellence" element={<BusinessExcellenceTrainingPage />} />
-          <Route path="/services" element={<ServicesPage />} />
-          <Route path="/blog"     element={<BlogPage />} />
-          <Route path="/blog/:slug" element={<ArticlePage />} />
-          <Route path="/meet-us"          element={<MeetUsPage />} />
-          <Route path="/events"           element={<EventsPage />} />
-          <Route path="/training/catalogue" element={<TrainingCataloguePage />} />
-        </Routes>
-        <Footer />
-      </div>
-
-      <LeadCaptureModal
-        isOpen={modal.open}
-        onClose={() => setModal(s => ({ ...s, open: false }))}
-        source={modal.source}
-        ncaMode={modal.ncaMode}
+      <AppShell
+        scrolled={scrolled}
+        modal={modal}
+        openBooking={openBooking}
+        setModal={setModal}
       />
-      <FloatingChatWidget />
     </BrowserRouter>
   );
 }
