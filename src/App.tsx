@@ -24,6 +24,8 @@ import ArticlePage   from './pages/ArticlePage';
 import MeetUsPage    from './pages/MeetUsPage';
 import EventsPage   from './pages/EventsPage';
 import TrainingCataloguePage from './pages/TrainingCataloguePage';
+import DiagnosticPage from './pages/DiagnosticPage';
+import DiagnosticCTA  from './components/DiagnosticCTA';
 
 // ─── Global CTA trigger → source mapping ─────────────────────────────────────
 const CTA_SOURCE_MAP: Record<string, string> = {
@@ -861,6 +863,7 @@ function AppShell({
             <Hero />
             <TrustedTeams />
             <Benefits />
+            <DiagnosticCTA />
             <ProblemSection />
             <Services />
             <About />
@@ -880,6 +883,7 @@ function AppShell({
         <Route path="/meet-us"          element={<MeetUsPage />} />
         <Route path="/events"           element={<EventsPage />} />
         <Route path="/training/catalogue" element={<TrainingCataloguePage />} />
+        <Route path="/diagnostic"       element={<DiagnosticPage />} />
       </Routes>
       <Footer />
 

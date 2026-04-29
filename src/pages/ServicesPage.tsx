@@ -10,6 +10,7 @@ import {
 import { Link } from 'react-router-dom';
 import LeadCaptureModal from '../components/LeadCaptureModal';
 import PromoPopup from '../components/PromoPopup';
+import DiagnosticCTA from '../components/DiagnosticCTA';
 
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -442,6 +443,8 @@ const ServicesPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <DiagnosticCTA />
 
       {/* ── Final CTA ─────────────────────────────────────────────────────── */}
       <section ref={finalRef} className="py-24 bg-white">

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Target, Zap, BarChart3, Leaf, Search, PenLine, TrendingUp } from 'lucide-react';
 import PromoPopup from '../components/PromoPopup';
+import DiagnosticCTA from '../components/DiagnosticCTA';
 
 const openChat = () => window.dispatchEvent(new CustomEvent('open-chat-widget'));
 
@@ -557,6 +558,7 @@ const BusinessExcellencePage: React.FC = () => (
     <ConsultingFramework />
     <ServicesSection />
     <OutcomesSection />
+    <DiagnosticCTA />
     <ConversationCTA />
     <PromoPopup />
   </main>
