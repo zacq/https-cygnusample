@@ -72,6 +72,25 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
     setStatus('loading');
     setErrorMsg('');
 
+    // Duplicate check — email and mpesaRef must be unique across all submissions
+    const prev: { email: string; mpesaRef: string }[] = JSON.parse(
+      localStorage.getItem('cygnus_submissions') || '[]'
+    );
+    const emailTaken = prev.some(r => r.email.toLowerCase() === formData.email.trim().toLowerCase());
+    const mpesaTaken = formData.mpesaRef.trim() &&
+      prev.some(r => r.mpesaRef.toLowerCase() === formData.mpesaRef.trim().toLowerCase());
+
+    if (emailTaken) {
+      setStatus('error');
+      setErrorMsg('This email address has already been used to register. Contact us if you need assistance.');
+      return;
+    }
+    if (mpesaTaken) {
+      setStatus('error');
+      setErrorMsg('This M-PESA reference has already been used. Each payment reference can only be used once.');
+      return;
+    }
+
     const payload = {
       fullName:     formData.fullName.trim(),
       phone:        formData.phone.trim(),
@@ -102,6 +121,13 @@ const LeadCaptureModal: React.FC<LeadCaptureModalProps> = ({
 
       const data = await res.json();
       if (!data.success) throw new Error(data.message || 'Submission failed');
+
+      // Record submission so future attempts with same email/mpesaRef are blocked
+      const saved: { email: string; mpesaRef: string }[] = JSON.parse(
+        localStorage.getItem('cygnus_submissions') || '[]'
+      );
+      saved.push({ email: formData.email.trim(), mpesaRef: formData.mpesaRef.trim() });
+      localStorage.setItem('cygnus_submissions', JSON.stringify(saved));
 
       setStatus('success');
     } catch (err: unknown) {
