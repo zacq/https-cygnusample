@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   Menu, X, ArrowRight, Zap, ShieldCheck, Clock,
   CheckCircle2, Phone, Mail, MapPin,
-  Twitter, Facebook, Linkedin, MessageCircle, ChevronDown, Search,
+  Twitter, Facebook, Linkedin, MessageCircle, ChevronDown, Search, BarChart3,
 } from 'lucide-react';
 
 import Hero              from './components/Hero';
