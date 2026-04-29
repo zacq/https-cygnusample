@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -79,6 +79,8 @@ const DiagnosticPage: React.FC = () => {
   const [contact,  setContact]  = useState<ContactData>({ fullName: '', email: '', phone: '', company: '', industry: '' });
   const [results,  setResults]  = useState<Results | null>(null);
   const [busy,     setBusy]     = useState(false);
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [screen]);
 
   const currentQ = screen >= 1 && screen <= 10 ? QUESTIONS[screen - 1] : null;
 

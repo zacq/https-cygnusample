@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowRight, TrendingUp, ChevronDown } from 'lucide-react';
+import { ArrowRight, TrendingUp, ChevronDown, BarChart3 } from 'lucide-react';
 
 interface Node {
   x: number; y: number;
@@ -159,6 +160,15 @@ const Hero: React.FC = () => {
             >
               Explore Services
             </motion.a>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="p-1 rounded-[1rem] bg-white/5 ring-1 ring-white/10">
+              <Link
+                to="/diagnostic"
+                className="bg-white/10 hover:bg-white/18 text-white px-6 py-[0.9rem] rounded-[0.625rem] font-bold text-lg transition-all border border-white/15 flex items-center gap-2 active:scale-[0.98]"
+              >
+                <BarChart3 className="w-5 h-5 text-brand-accent" />
+                Free Diagnostic
+              </Link>
+            </motion.div>
           </div>
 
           {/* Stats */}

@@ -724,6 +724,15 @@ const CTASection: React.FC = () => (
             >
               Contact Us
             </motion.a>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="p-1.5 rounded-[1.5rem] bg-white/5 ring-1 ring-white/10">
+              <Link
+                to="/diagnostic"
+                className="bg-brand-navy/60 hover:bg-brand-navy/80 backdrop-blur-sm text-white px-8 py-[1.1rem] rounded-[0.875rem] font-bold text-xl transition-all border border-white/15 flex items-center gap-3 active:scale-[0.98]"
+              >
+                <BarChart3 className="w-5 h-5 text-brand-accent" />
+                Free Diagnostic
+              </Link>
+            </motion.div>
           </div>
           <p className="mt-8 text-white/50 text-sm">
             Prefer a conversation first?{' '}
