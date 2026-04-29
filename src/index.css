@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui;
+  --font-sans: "Outfit", ui-sans-serif, system-ui;
   --font-display: "Playfair Display", serif;
 
   /* Brand Palette — Cygnus Consulting */
@@ -21,6 +21,7 @@
     font-family: var(--font-display);
     font-weight: 700;
     letter-spacing: -0.02em;
+    text-wrap: balance;
   }
 }
 

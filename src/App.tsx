@@ -158,7 +158,7 @@ const Navbar: React.FC<{ scrolled: boolean; onBookingClick: () => void }> = ({ s
           </Link>
           <button
             onClick={onBookingClick}
-            className="bg-brand-navy hover:bg-brand-blue text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-brand-navy/20 flex items-center gap-1.5"
+            className="bg-brand-navy hover:bg-brand-blue active:scale-[0.97] text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-400 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-[0_4px_16px_rgba(13,31,53,0.22)] hover:shadow-[0_6px_24px_rgba(27,110,194,0.28)] flex items-center gap-1.5"
           >
             Book a Call
             <ArrowRight className="w-3.5 h-3.5" />
@@ -283,7 +283,7 @@ const Benefits: React.FC = () => (
       <div className="text-center max-w-3xl mx-auto mb-14">
         <motion.p
           initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="text-brand-blue font-bold uppercase tracking-widest text-sm mb-3"
+          className="text-brand-blue font-semibold text-sm mb-3 uppercase tracking-[0.15em]"
         >
           Our Promise
         </motion.p>
@@ -304,24 +304,42 @@ const Benefits: React.FC = () => (
         </motion.p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8">
-        {benefits.map((b, i) => (
-          <motion.div
-            key={b.title}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.12, duration: 0.6 }}
-            whileHover={{ y: -8 }}
-            className="bg-white p-9 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:border-brand-blue/20 transition-all group"
-          >
-            <div className="w-14 h-14 bg-brand-blue/10 rounded-2xl flex items-center justify-center text-brand-blue mb-7 group-hover:bg-brand-navy group-hover:text-white transition-colors">
-              {b.icon}
-            </div>
-            <h3 className="text-xl font-bold text-brand-navy mb-3">{b.title}</h3>
-            <p className="text-slate-500 leading-relaxed">{b.desc}</p>
-          </motion.div>
-        ))}
+      {/* Asymmetric grid: large featured card left, two stacked right */}
+      <div className="grid md:grid-cols-[3fr_2fr] gap-7 items-stretch">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0, duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+          className="bg-white p-11 rounded-3xl shadow-[0_4px_32px_rgba(27,110,194,0.07)] group hover:shadow-[0_8px_48px_rgba(27,110,194,0.13)] transition-shadow duration-500"
+        >
+          <div className="w-14 h-14 bg-brand-blue/10 rounded-2xl flex items-center justify-center text-brand-blue mb-8 group-hover:bg-brand-navy group-hover:text-white transition-colors duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]">
+            {benefits[0].icon}
+          </div>
+          <h3 className="text-2xl font-bold text-brand-navy mb-4">{benefits[0].title}</h3>
+          <p className="text-slate-500 leading-relaxed text-lg max-w-sm">{benefits[0].desc}</p>
+        </motion.div>
+
+        <div className="flex flex-col gap-7">
+          {benefits.slice(1).map((b, i) => (
+            <motion.div
+              key={b.title}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: (i + 1) * 0.12, duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+              className="bg-white/70 p-8 rounded-3xl flex gap-5 items-start group hover:bg-white hover:shadow-[0_4px_24px_rgba(27,110,194,0.07)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
+            >
+              <div className="w-11 h-11 bg-brand-blue/10 rounded-xl flex items-center justify-center text-brand-blue shrink-0 group-hover:bg-brand-navy group-hover:text-white transition-colors duration-500">
+                {b.icon}
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-brand-navy mb-2">{b.title}</h3>
+                <p className="text-slate-500 leading-relaxed text-sm">{b.desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   </section>
@@ -497,9 +515,9 @@ const About: React.FC = () => (
           ))}
         </ul>
 
-        <button className="bg-brand-navy text-white px-8 py-4 rounded-xl font-bold hover:bg-brand-blue transition-all flex items-center gap-2 group">
+        <button className="bg-brand-navy text-white px-8 py-4 rounded-xl font-bold hover:bg-brand-blue active:scale-[0.98] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex items-center gap-2 group shadow-[0_4px_24px_rgba(13,31,53,0.25)] hover:shadow-[0_6px_32px_rgba(27,110,194,0.3)]">
           Learn More About Cygnus
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
         </button>
 
         <p className="mt-6 text-sm text-slate-500">
@@ -644,9 +662,9 @@ const Training: React.FC = () => (
         viewport={{ once: true }}
         className="text-center mt-12"
       >
-        <button className="bg-brand-blue hover:bg-brand-accent text-white px-10 py-4 rounded-xl font-bold text-lg transition-all flex items-center gap-2 group mx-auto shadow-xl shadow-brand-blue/30">
+        <button className="bg-brand-blue hover:bg-brand-accent active:scale-[0.98] text-white px-10 py-4 rounded-xl font-bold text-lg transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex items-center gap-2 group mx-auto shadow-[0_8px_32px_rgba(27,110,194,0.35)] hover:shadow-[0_12px_40px_rgba(14,165,214,0.4)]">
           Book a Strategy Call
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
         </button>
         <p className="text-slate-500 text-sm mt-4">On-site & remote delivery available across East Africa</p>
       </motion.div>
