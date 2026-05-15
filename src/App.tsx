@@ -39,6 +39,8 @@ const CTA_SOURCE_MAP: Record<string, string> = {
   'Get Started':           'General — Get Started',
   'Get Started Today':     'General — Get Started Today',
   'Initiate Strategy Call':'General — Initiate Strategy Call',
+  'Join the Waitlist':     'AI Training — Join Waitlist',
+  'Book This Course':      'Training Catalogue — Course Booking',
 };
 const BOOKING_TRIGGERS = Object.keys(CTA_SOURCE_MAP);
 
