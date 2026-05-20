@@ -135,7 +135,7 @@ const MeetUsPage: React.FC = () => {
             transition={{ duration: 0.7 }}
           >
             <img
-              src="/images/team-photo.jpg.jpeg"
+              src="/images/team photo.jpeg"
               alt="Cygnus Consulting team"
               className="w-full rounded-3xl object-cover shadow-xl"
               style={{ maxHeight: '480px', objectPosition: 'center top' }}

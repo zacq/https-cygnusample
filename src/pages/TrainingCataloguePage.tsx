@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
+import LeadCaptureModal from '../components/LeadCaptureModal';
 import {
   ArrowRight, AlertTriangle, Flame, Heart, ClipboardCheck, ShieldCheck, Leaf,
   RefreshCcw, Target, TrendingUp, Users, Award, GitBranch, BarChart3, Activity,
@@ -244,7 +245,7 @@ const WHY_BCIE = [
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-const CourseCard: React.FC<{ course: Course; accent: string; index: number }> = ({ course, accent, index }) => (
+const CourseCard: React.FC<{ course: Course; accent: string; index: number; onBook: () => void }> = ({ course, accent, index, onBook }) => (
   <motion.div
     initial={{ opacity: 0, y: 18 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -290,8 +291,9 @@ const CourseCard: React.FC<{ course: Course; accent: string; index: number }> = 
       ))}
     </div>
 
-    {/* CTA — pinned to bottom, uses global click intercept */}
+    {/* CTA — pinned to bottom */}
     <button
+      onClick={(e) => { e.stopPropagation(); onBook(); }}
       className="mt-auto self-start inline-flex items-center gap-1.5 text-sm font-semibold transition-all group-hover:gap-2.5"
       style={{ color: accent }}
     >
@@ -306,10 +308,11 @@ interface CategorySectionProps {
   title: string;
   accent: string;
   courses: Course[];
+  onBook: (courseTitle: string) => void;
   children?: React.ReactNode;
 }
 
-const CategorySection: React.FC<CategorySectionProps> = ({ label, title, accent, courses, children }) => (
+const CategorySection: React.FC<CategorySectionProps> = ({ label, title, accent, courses, onBook, children }) => (
   <section className="max-w-6xl mx-auto px-6 py-16">
     {/* Section header */}
     <div className="relative mb-12 overflow-hidden">
@@ -351,7 +354,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({ label, title, accent,
     {/* Course grid — 2 columns, NOT the generic 3-equal pattern */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {courses.map((course, i) => (
-        <CourseCard key={course.number} course={course} accent={accent} index={i} />
+        <CourseCard key={course.number} course={course} accent={accent} index={i} onBook={() => onBook(course.title)} />
       ))}
     </div>
   </section>
@@ -360,6 +363,14 @@ const CategorySection: React.FC<CategorySectionProps> = ({ label, title, accent,
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 const TrainingCataloguePage: React.FC = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState('');
+
+  const openModal = (courseTitle: string, category: string) => {
+    setSelectedCourse(courseTitle ? `${category} — ${courseTitle}` : '');
+    setModalOpen(true);
+  };
+
   return (
     <main className="min-h-screen bg-white">
 
@@ -491,7 +502,7 @@ const TrainingCataloguePage: React.FC = () => {
 
       {/* ── Section A: Safety & Sustainability ─────────────────────────────── */}
       <div id="safety">
-        <CategorySection label="A" title="Safety & Sustainability" accent="#DC2626" courses={SAFETY_COURSES} />
+        <CategorySection label="A" title="Safety & Sustainability" accent="#DC2626" courses={SAFETY_COURSES} onBook={(t) => openModal(t, 'Safety & Sustainability')} />
       </div>
 
       {/* Divider */}
@@ -506,6 +517,7 @@ const TrainingCataloguePage: React.FC = () => {
           title="Business Continuous Improvement & Excellence"
           accent="#D4AF37"
           courses={BCIE_COURSES}
+          onBook={(t) => openModal(t, 'Business Excellence')}
         >
           {/* "Why BCI&E" banner — dark feature card before course list */}
           <motion.div
@@ -556,7 +568,7 @@ const TrainingCataloguePage: React.FC = () => {
 
       {/* ── Section C: Logistics ───────────────────────────────────────────── */}
       <div id="logistics">
-        <CategorySection label="C" title="Logistics" accent="#1B6EC2" courses={LOGISTICS_COURSES} />
+        <CategorySection label="C" title="Logistics" accent="#1B6EC2" courses={LOGISTICS_COURSES} onBook={(t) => openModal(t, 'Logistics')} />
       </div>
 
       {/* ── Contact Section ────────────────────────────────────────────────── */}
@@ -584,8 +596,11 @@ const TrainingCataloguePage: React.FC = () => {
               <p className="text-slate-400 leading-relaxed mb-8">
                 All programs are available for onsite corporate delivery, virtual sessions, or customised formats. Contact us to schedule a training for your organisation.
               </p>
-              <button className="inline-flex items-center gap-2.5 bg-brand-accent hover:bg-brand-accent/90 active:scale-[0.98] text-white font-bold px-7 py-3.5 rounded-xl transition-all text-sm tracking-wide shadow-lg shadow-brand-accent/20">
-                Book This Course
+              <button
+                onClick={(e) => { e.stopPropagation(); openModal('', ''); }}
+                className="inline-flex items-center gap-2.5 bg-brand-accent hover:bg-brand-accent/90 active:scale-[0.98] text-white font-bold px-7 py-3.5 rounded-xl transition-all text-sm tracking-wide shadow-lg shadow-brand-accent/20"
+              >
+                Book a Course
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -612,6 +627,18 @@ const TrainingCataloguePage: React.FC = () => {
         </motion.div>
       </section>
 
+      <LeadCaptureModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        source="Training Catalogue"
+        courseDetail={selectedCourse}
+        heading={selectedCourse ? 'Book This Course' : 'Training Enquiry'}
+        subheading={
+          selectedCourse
+            ? "Tell us about your organisation and we'll confirm availability."
+            : "Tell us which programs interest your team and we'll be in touch."
+        }
+      />
     </main>
   );
 };
