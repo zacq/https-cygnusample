@@ -8,10 +8,7 @@ import {
 import { ARTICLES_DATA, type ContentSection } from '../data/articles';
 import LeadCaptureModal from '../components/LeadCaptureModal';
 
-// ─── Airtable (comments) ──────────────────────────────────────────────────────
-const AIRTABLE_TOKEN = import.meta.env.VITE_BOOKING_AIRTABLE_TOKEN as string;
-const LEADS_BASE     = import.meta.env.VITE_BOOKING_AIRTABLE_BASE as string;
-const LEADS_TABLE    = import.meta.env.VITE_BOOKING_AIRTABLE_TABLE as string;
+const WEBHOOK_URL = import.meta.env.VITE_BOOKING_WEBHOOK_URL as string;
 
 // ─── Content renderer ─────────────────────────────────────────────────────────
 const RenderSection: React.FC<{
@@ -130,25 +127,23 @@ const CommentSection: React.FC<{ articleTitle: string }> = ({ articleTitle }) =>
     e.preventDefault();
     setStatus('loading');
     try {
-      const res = await fetch(`https://api.airtable.com/v0/${LEADS_BASE}/${LEADS_TABLE}`, {
+      const res = await fetch(WEBHOOK_URL, {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${AIRTABLE_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          fields: {
-            Name:    form.name.trim(),
-            Email:   form.email.trim(),
-            Message: form.comment.trim(),
-            Source:  'Article Comment',
-            Course:  articleTitle,
-            Status:  'New',
-            Date:    new Date().toISOString().split('T')[0],
-          },
+          fullName:     form.name.trim(),
+          phone:        'N/A',
+          email:        form.email.trim(),
+          company:      '',
+          message:      form.comment.trim(),
+          source:       'Article Comment',
+          courseDetail: articleTitle,
+          submittedAt:  new Date().toISOString(),
+          pageUrl:      window.location.href,
         }),
       });
-      if (!res.ok) throw new Error('Failed');
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error('Failed');
       setStatus('success');
       setForm({ name: '', email: '', comment: '' });
     } catch {
