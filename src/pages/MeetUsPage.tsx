@@ -137,8 +137,7 @@ const MeetUsPage: React.FC = () => {
             <img
               src="/images/team photo.jpeg"
               alt="Cygnus Consulting team"
-              className="w-full rounded-3xl object-cover shadow-xl"
-              style={{ maxHeight: '480px', objectPosition: 'center top' }}
+              className="w-full rounded-3xl shadow-xl"
             />
             <p className="text-center text-sm text-slate-400 mt-4">
               The Cygnus Consulting team — practitioners first.
