@@ -38,9 +38,12 @@ No test suite is configured.
 | `/business-excellence` | `src/pages/BusinessExcellencePage.tsx` |
 | `/training/nca` | `src/pages/NCATrainingPage.tsx` |
 | `/training/business-excellence` | `src/pages/BusinessExcellenceTrainingPage.tsx` |
+| `/training/catalogue` | `src/pages/TrainingCataloguePage.tsx` |
 | `/services` | `src/pages/ServicesPage.tsx` |
 | `/blog` | `src/pages/BlogPage.tsx` |
 | `/blog/:slug` | `src/pages/ArticlePage.tsx` |
+| `/diagnostic` | `src/pages/DiagnosticPage.tsx` |
+| `/meet-us` | `src/pages/MeetUsPage.tsx` |
 
 ### Shared data
 - `src/data/ncaSessions.ts` — single source of truth for NCA training sessions. Both `NCATrainingPage` and `PromoPopup` import `NCA_SESSIONS` and `getNextSession()` from here. Update this file to change session dates/topics everywhere at once.
@@ -53,6 +56,8 @@ No test suite is configured.
 | `PromoPopup` | Semi-translucent 2-column widget. Appears when `id="page-hero"` scrolls out of view (IntersectionObserver). LHS: next NCA session from `ncaSessions.ts`. RHS: download CTA for BCIE Calendar PDF. Active on Home, BE, Services, Blog. |
 | `FloatingChatWidget` | Apex AI advisor — posts to n8n webhook (`VITE_CHAT_WEBHOOK_URL`), falls back to static responses. |
 | `Hero` | Canvas particle network (70 nodes, MAX_DIST 160px). |
+| `DiagnosticCTA` | Reusable contextual strip linking to `/diagnostic`. Embedded on Home (between Benefits and ProblemSection), ServicesPage, and BusinessExcellencePage. |
+| `DiagnosticPage` | 4-screen animated quiz. Scores across 10 operational dimensions. On completion POSTs to `VITE_DIAGNOSTIC_WEBHOOK_URL` (non-blocking). Results CTA fires `open-booking-modal` event. |
 
 ### Styling
 - Brand tokens defined in `src/index.css` under `@theme`: `brand-navy` (#0D1F35), `brand-blue` (#1B6EC2), `brand-accent` (#0EA5D6), `brand-gold` (#D4AF37).
@@ -60,10 +65,13 @@ No test suite is configured.
 
 ### Env vars
 ```
-VITE_BOOKING_WEBHOOK_URL=      # LeadCaptureModal → n8n webhook (n8n writes to Airtable)
+VITE_BOOKING_WEBHOOK_URL=      # LeadCaptureModal + ArticlePage comments + TrainingCataloguePage → n8n
 VITE_CHAT_WEBHOOK_URL=         # FloatingChatWidget → n8n
+VITE_DIAGNOSTIC_WEBHOOK_URL=   # DiagnosticPage quiz results → n8n (non-blocking, optional)
 ```
 Add to `.env` locally; add to Netlify dashboard for production. Never commit `.env` or real tokens in `.env.example`.
+
+> **Security rule:** Never use `VITE_BOOKING_AIRTABLE_TOKEN` or any Airtable PAT in frontend code. All Airtable writes must go through n8n server-side. Exposing tokens in the Vite bundle triggers AV false positives (Avast flags the site as malicious) and gives public read/write access to the entire base.
 
 **Booking webhook URLs:**
 - Production (workflow active): `https://primary-production-bfd8.up.railway.app/webhook/96b990ab-967c-4b1f-ab02-b2fd48609280`
@@ -244,3 +252,97 @@ Do NOT wrap the entire body in a single `={{ ({ ... }) }}` expression — n8n UI
 | `continueOnFail: true` on email node | Lead capture is more critical than email delivery — lead is never lost if email fails |
 | Static Zoom link per event | Simpler and more reliable than per-user Zoom generation for cohort-based training |
 | `pageUrl: window.location.href` in payload | Tracks which page/course the registration came from |
+| Route ArticlePage comments through n8n (not direct Airtable) | Airtable PAT in frontend bundle triggered Avast AV false positive; removed token entirely |
+| TrainingCataloguePage uses LeadCaptureModal with courseDetail | Each course card passes its title + category as courseDetail so Airtable records are clearly attributed |
+| `e.stopPropagation()` on TrainingCataloguePage book buttons | Prevents global click intercept in App.tsx from also firing and opening a second modal |
+
+---
+
+## Errors & Resolutions Log
+
+### 1. n8n webhook body wrapper (typeVersion 2)
+**Symptom:** Validation always failed — `Missing required fields: fullName, email` — even when fields were present in the payload.
+**Root cause:** n8n webhook node typeVersion 2 wraps the POST body under `.body`. So `$input.first().json` is `{ headers, body, params, query }`, not the payload itself.
+**Fix:** First line of every Code node that reads webhook data:
+```js
+const raw = $input.first().json;
+const body = raw.body !== undefined ? raw.body : raw;
+```
+This handles both typeVersion 1 (raw payload) and typeVersion 2 (wrapped payload).
+
+---
+
+### 2. Airtable token in frontend bundle → AV false positive
+**Symptom:** Avast flagged `cygnus.co.ke` as "malicious code detected". Site appeared unsafe to visitors.
+**Root cause:** `ArticlePage.tsx` was calling `api.airtable.com` directly from the browser using `VITE_BOOKING_AIRTABLE_TOKEN`. Vite compiles all `VITE_*` env vars into the JS bundle in plain text. Security scanners pattern-match API tokens in client-side JS — identical pattern to data-stealing malware.
+**Fix:** Removed direct Airtable call from `ArticlePage.tsx`. Article comments now POST to `VITE_BOOKING_WEBHOOK_URL` (n8n) with `phone: 'N/A'` and `source: 'Article Comment'`. Token removed from bundle entirely.
+**Verification:** `grep -r "pat6fupitSdxr6AXE" dist/assets/` — returns nothing after fix.
+
+---
+
+### 3. Brevo email silently failing — Railway IP change
+**Symptom:** Webhook returns `{"success":true}`, Airtable records created, but no welcome emails ever delivered. All 93 records showed `Email Status: Pending`.
+**Root cause:** Railway container restarted and got a new outbound IP. Brevo's IP allowlist security feature blocked all requests from the unrecognised IP (`34.21.207.239`) with `401 Unauthorized`.
+**Fix:** Log into `app.brevo.com` → Security → Authorised IPs → add the new Railway IP.
+**Long-term fix:** Remove all IP restrictions from Brevo entirely. The API key is secret and server-side only — IP whitelist adds no practical security but breaks silently on every Railway restart.
+**How to diagnose:** In n8n → Executions → open latest execution → click Send Welcome Email node → Output tab shows the 401 error and the unrecognised IP address.
+
+---
+
+### 4. DiagnosticPage auto-scrolls to bottom on load
+**Symptom:** Navigating to `/diagnostic` always opened at the bottom of the page.
+**Root cause:** React Router's scroll position is inherited from the previous page.
+**Fix:** Added `useEffect` in `DiagnosticPage.tsx`:
+```tsx
+useEffect(() => {
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}, [screen]);
+```
+Fires on mount (screen=0) and every time the quiz advances to the next screen.
+
+---
+
+### 5. Missing lucide-react icon import breaks page
+**Symptom:** `Uncaught ReferenceError: BarChart3 is not defined` in `App.tsx` — CTASection crashed.
+**Root cause:** Added `<BarChart3 />` icon to CTASection but forgot to include it in the lucide-react import at the top of `App.tsx`.
+**Fix:** Add the icon name to the existing import statement. Always check the import line when adding new lucide icons to a file.
+
+---
+
+### 6. Apostrophe in JSX single-quoted string literal
+**Symptom:** TypeScript errors `TS1005: ':' expected` and `TS1381: Unexpected token` at the line containing "we'll".
+**Root cause:** Using a straight apostrophe `'` inside a single-quoted JSX string `'we'll'` terminates the string early.
+**Fix:** Use double quotes for strings containing apostrophes: `"we'll"`. Or use `&apos;` / `{'\''}`  as alternatives.
+
+---
+
+### 7. SSL certificate expired — ZeroSSL not auto-renewing
+**Symptom:** Site showed browser SSL warning. Avast flagged site. Page rendered without CSS (browser blocked sub-resources on invalid cert). cPanel AutoSSL showed "will not renew — not issued via AutoSSL".
+**Root cause:** ZeroSSL 90-day free cert expired (25 Feb → 26 May 2026). cPanel's AutoSSL only auto-renews certs it issued — manually uploaded ZeroSSL certs are ignored.
+**Fix in progress:** Migrating to Cloudflare (free plan). Cloudflare issues its own SSL cert that never expires from the user's perspective. Nameserver update at KENIC registrar is the final step.
+**cPanel AutoSSL note:** The SSL/TLS Wizard on this hosting account shows "There are no SSL/TLS products available" — the hosting provider has not enabled AutoSSL/Let's Encrypt. Manual cert upload is the only cPanel option, which means repeating every 90 days.
+
+---
+
+### 8. TrainingCataloguePage form not connected to Airtable
+**Symptom:** "Book This Course" buttons on training catalogue relied on global click intercept but opened a generic modal with no course context. No data connected to Airtable.
+**Fix:** Converted `TrainingCataloguePage` to a stateful component. Each `CourseCard` now calls `onBook(course.title)` which sets `selectedCourse` state as `"Category — Course Title"` and opens `LeadCaptureModal` with `courseDetail` and `source: 'Training Catalogue'` pre-filled. Used `e.stopPropagation()` to prevent the global click intercept from also firing.
+
+---
+
+### 9. Meet Us page team photo showing ceiling instead of team
+**Symptom:** `/meet-us` page showed a blurry ceiling with lights instead of the team photo.
+**Root cause 1:** Wrong filename — code referenced `team-photo.jpg.jpeg` but actual file was `team photo.jpeg` (space in name, no hyphen).
+**Root cause 2:** `objectPosition: 'center top'` was cropping to the top of the image (the ceiling). 
+**Fix:** Corrected the `src` to `/images/team photo.jpeg` and removed `object-cover`, `maxHeight`, and `objectPosition` constraints so the full image renders at its natural dimensions.
+
+---
+
+## Pending work
+
+| Item | Status | Notes |
+|---|---|---|
+| Cloudflare SSL migration | In progress | Cloudflare account created; nameserver update at KENIC pending |
+| IntaSend payment integration | Planned | STK Push flow; account setup required first |
+| Resend welcome emails to 93 pending registrants | Pending | All records from before June 2026 have Email Status: Pending — never received welcome email due to Brevo IP block |
+| Brevo IP restriction | Recommended | Remove IP whitelist from Brevo to prevent future silent failures on Railway restart |
