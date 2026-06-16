@@ -174,6 +174,8 @@ LeadCaptureModal (browser)
 
 **Base:** `appCDdfoFtTmAhsTY` | **Table:** `tblzQJc9lYGjXmSvS`
 
+> **CI Network leads** (`source === "CI Network"`) should be routed to a separate table — **Table:** `tblvMluLXvpLwCpxD` (same base). Add an IF branch in the n8n "Validate Lead Data" code node to detect `body.source === 'CI Network'` and point the Airtable HTTP Request at `tblvMluLXvpLwCpxD`. Fields: Name, Email, Phone, Company, Designation (from `designation`), Message, Source, Course / Service Detail, Status, Email Status, Date Submitted, Page URL. CI Network leads are submitted by `CinaLeadModal` — no payment details, adds `designation` (role/title) field.
+
 | Field | Type | Mapped from |
 |---|---|---|
 | Name | Single line text | `fullName` |
@@ -254,6 +256,7 @@ Do NOT wrap the entire body in a single `={{ ({ ... }) }}` expression — n8n UI
 | `pageUrl: window.location.href` in payload | Tracks which page/course the registration came from |
 | Route ArticlePage comments through n8n (not direct Airtable) | Airtable PAT in frontend bundle triggered Avast AV false positive; removed token entirely |
 | TrainingCataloguePage uses LeadCaptureModal with courseDetail | Each course card passes its title + category as courseDetail so Airtable records are clearly attributed |
+| CINA page (`/meet-us`) uses `CinaLeadModal` not `LeadCaptureModal` | CINA has its own dark-themed modal, no payment details box, adds `designation` (role/title) field, posts with `source: "CI Network"` for n8n routing to separate Airtable table |
 | `e.stopPropagation()` on TrainingCataloguePage book buttons | Prevents global click intercept in App.tsx from also firing and opening a second modal |
 
 ---

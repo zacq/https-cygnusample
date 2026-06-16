@@ -53,6 +53,48 @@
       }
     },
     {
+      "id": "a1b2c3d4-0008-0008-0008-000000000008",
+      "name": "Is CI Network?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 300],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "cond-cina",
+              "leftValue": "={{ $json.source }}",
+              "rightValue": "CI Network",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "a1b2c3d4-0009-0009-0009-000000000009",
+      "name": "Create CI Network Record",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 420],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.airtable.com/v0/appCDdfoFtTmAhsTY/tblvMluLXvpLwCpxD",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer YOUR_AIRTABLE_TOKEN" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ ({ fields: { 'Name': $json.fullName, 'Email': $json.email, 'Phone': $json.phone, 'Company': $json.company || '', 'Role / Title': $json.designation || '', 'Program Interest': $json.courseDetail || '', 'How can we help?': $json.message || '', 'Source': $json.source, 'Status': 'New', 'Email Status': 'Pending', 'Date Submitted': $json.submittedAt.split('T')[0], 'Page URL': $json.pageUrl || '' } }) }}",
+        "options": { "response": { "response": { "fullResponse": false } } }
+      }
+    },
+    {
       "id": "a1b2c3d4-0004-0004-0004-000000000004",
       "name": "Create Airtable Record",
       "type": "n8n-nodes-base.httpRequest",
@@ -171,7 +213,7 @@
       "main": [
         [
           {
-            "node": "Create Airtable Record",
+            "node": "Is CI Network?",
             "type": "main",
             "index": 0
           }
@@ -179,6 +221,35 @@
         [
           {
             "node": "Respond Validation Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is CI Network?": {
+      "main": [
+        [
+          {
+            "node": "Create CI Network Record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Airtable Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create CI Network Record": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
             "type": "main",
             "index": 0
           }

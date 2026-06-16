@@ -527,7 +527,7 @@ const About: React.FC = () => (
         <p className="mt-6 text-sm text-slate-500">
           Behind every system we build is a philosophy of reclaiming operational potential.{' '}
           <Link to="/meet-us" className="text-brand-blue hover:text-brand-accent font-semibold transition-colors">
-            Meet the mind behind Cygnus →
+            CI Network →
           </Link>
         </p>
       </motion.div>
@@ -739,7 +739,7 @@ const CTASection: React.FC = () => (
           <p className="mt-8 text-white/50 text-sm">
             Prefer a conversation first?{' '}
             <Link to="/meet-us" className="text-brand-accent hover:text-white transition-colors font-semibold">
-              Meet us before we work together →
+              Join the CI Network →
             </Link>
           </p>
         </div>
@@ -795,7 +795,7 @@ const Footer: React.FC = () => (
             <li key={s}><Link to="/" className="hover:text-brand-blue transition-colors">{s}</Link></li>
           ))}
           <li>
-            <Link to="/meet-us" className="hover:text-brand-blue transition-colors">Meet Us</Link>
+            <Link to="/meet-us" className="hover:text-brand-blue transition-colors">CI Network</Link>
           </li>
         </ul>
       </div>
@@ -864,6 +864,7 @@ function AppShell({
   const location = useLocation();
   const hiddenNavRoutes = ['/meet-us'];
   const showNav = !hiddenNavRoutes.includes(location.pathname);
+  const showFooter = !hiddenNavRoutes.includes(location.pathname);
 
   return (
     <div className="font-sans overflow-x-hidden">
@@ -896,7 +897,7 @@ function AppShell({
         <Route path="/training/catalogue" element={<TrainingCataloguePage />} />
         <Route path="/diagnostic"       element={<DiagnosticPage />} />
       </Routes>
-      <Footer />
+      {showFooter && <Footer />}
 
       <LeadCaptureModal
         isOpen={modal.open}
